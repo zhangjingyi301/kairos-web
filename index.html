@@ -1,0 +1,1858 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Kairos：理解、生成、预测一体化的具身世界模型。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Kairos World Model">
+  <meta property="og:description" content="理解、生成、预测一体化的具身世界模型。">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Kairos World Model">
+  <meta name="twitter:description" content="理解、生成、预测一体化的具身世界模型。">
+  <title>Kairos World Model</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17161a;
+      --muted: #68656f;
+      --paper: #ffffff;
+      --wash: #f6f5f7;
+      --violet-wash: #f3efff;
+      --line: #dedce2;
+      --purple: #6d3be5;
+      --purple-dark: #4b20aa;
+      --focus: #2b68ff;
+      --shadow: 0 18px 50px rgba(35, 24, 60, .09);
+      --radius-sm: .75rem;
+      --radius: 1.25rem;
+      --radius-lg: 1.75rem;
+      --space-section: clamp(4.5rem, 13vw, 9rem);
+      --page: min(100% - 2rem, 74rem);
+      --measure: 43rem;
+      --step--1: clamp(.82rem, .79rem + .14vw, .9rem);
+      --step-0: clamp(1rem, .96rem + .2vw, 1.125rem);
+      --step-1: clamp(1.25rem, 1.14rem + .55vw, 1.55rem);
+      --step-2: clamp(1.65rem, 1.38rem + 1.35vw, 2.4rem);
+      --step-3: clamp(2.6rem, 2rem + 3vw, 4.8rem);
+      --motion-fast: 180ms;
+      --motion-standard: 240ms;
+      --motion-enter: 620ms;
+      --motion-ease: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font: 400 var(--step-0)/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      text-rendering: optimizeLegibility;
+    }
+    ::selection { background: #dcd0ff; color: var(--ink); }
+    a { color: inherit; text-underline-offset: .22em; }
+    button, summary { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:disabled { opacity: .58; cursor: not-allowed; filter: saturate(.62); transform: none !important; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: .25rem; }
+    h1, h2, h3, p { overflow-wrap: anywhere; }
+    h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: -.035em; }
+    h2 { max-width: 18ch; font-size: var(--step-2); }
+    h3 { font-size: var(--step-1); }
+    p { margin: 0; }
+    ul, ol, dl { margin: 0; padding: 0; }
+    section, footer { width: var(--page); margin-inline: auto; }
+    section { padding-block: var(--space-section); }
+    section > header { display: grid; gap: .8rem; margin-bottom: 2rem; }
+    section > header > p:first-child, section > p:first-child {
+      color: var(--purple-dark); font-size: var(--step--1); font-weight: 750; letter-spacing: .09em; text-transform: uppercase;
+    }
+    section > header > p:last-child { max-width: var(--measure); color: var(--muted); }
+
+    .skip-link { position: fixed; z-index: 100; top: .5rem; left: .5rem; padding: .75rem 1rem; transform: translateY(-150%); background: var(--ink); color: white; }
+    .skip-link:focus { transform: none; }
+    #top { position: sticky; z-index: 50; top: 0; border-bottom: 1px solid rgba(222,220,226,.85); background: rgba(255,255,255,.9); backdrop-filter: blur(16px); }
+    #top nav { width: var(--page); min-height: 4.5rem; margin: auto; display: flex; align-items: center; gap: .4rem; padding-top: env(safe-area-inset-top); }
+    /* Release dependency: use the original transparent KAIROS logo master; screenshot extraction was rejected due to edge artifacts. */
+    .brand-link { min-height: 44px; display: inline-flex; align-items: center; margin-right: auto; color: var(--ink); text-decoration: none; font-size: 1.05rem; font-weight: 850; letter-spacing: .18em; }
+    #top button { min-width: 44px; min-height: 44px; padding: .45rem .65rem; border: 1px solid var(--line); border-radius: 999px; background: white; color: var(--muted); }
+    #site-menu { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1rem; }
+    #site-menu a { position: relative; min-height: 44px; display: inline-flex; align-items: center; }
+    #site-menu a::after { content: ""; position: absolute; right: 0; bottom: .35rem; left: 0; height: 2px; background: var(--purple); transform: scaleX(0); transform-origin: left; transition: transform var(--motion-standard) var(--motion-ease); }
+    #site-menu a:focus-visible::after { transform: scaleX(1); }
+    .menu-trigger, .lang-trigger { display: none; }
+    .js .menu-trigger, .js .lang-trigger { display: inline-block; }
+    .js #site-menu { display: none; }
+    body.menu-open, body.dialog-open { overflow: hidden; }
+    .menu-backdrop { display: none; }
+    .back-to-top {
+      position: fixed; z-index: 35; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom));
+      min-width: 44px; min-height: 44px; padding: .65rem .9rem; border: 1px solid var(--line); border-radius: 999px;
+      background: var(--ink); color: white; box-shadow: var(--shadow); opacity: 0; visibility: hidden; transform: translateY(.5rem);
+      transition: opacity .18s ease, transform .18s ease, visibility .18s;
+    }
+    .js .back-to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+
+    /* Scroll reveals are progressive enhancement: content is visible until motion setup succeeds. */
+    .js.motion-ready .motion-reveal {
+      opacity: 0;
+      transform: translateY(1.5rem);
+      transition: opacity var(--motion-enter) var(--motion-ease), transform var(--motion-enter) var(--motion-ease);
+      transition-delay: calc(var(--motion-order, 0) * 70ms);
+    }
+    .js.motion-ready .motion-reveal.is-revealed { opacity: 1; transform: none; }
+    .js.motion-ready.motion-no-stagger .motion-reveal { transition-delay: 0ms; }
+
+    @media (max-width: 43.999rem) {
+      .js #site-menu[data-open="true"] {
+        position: fixed; z-index: 60; inset: calc(4.5rem + env(safe-area-inset-top)) 0 0 auto; width: min(88vw, 25rem);
+        display: flex; flex-direction: column; align-items: stretch; gap: .15rem; padding: 1rem 1rem max(2rem, env(safe-area-inset-bottom));
+        overflow-y: auto; border-left: 1px solid var(--line); background: var(--paper); box-shadow: -18px 20px 50px rgba(35, 24, 60, .14);
+      }
+      #site-menu a { min-height: 52px; display: flex; align-items: center; padding: .35rem .6rem; border-bottom: 1px solid var(--line); text-decoration: none; font-weight: 700; }
+      .js #site-menu.menu-items-entering a { animation: menu-item-enter var(--motion-standard) var(--motion-ease) both; animation-delay: calc(var(--menu-motion-order, 0) * 45ms); }
+      .menu-backdrop[data-open="true"] { position: fixed; z-index: 45; inset: 0; display: block; border: 0; background: rgba(23,22,26,.34); }
+    }
+
+    #hero { position: relative; isolation: isolate; overflow: hidden; width: 100%; margin-inline: 0; min-height: min(48rem, calc(100svh - 4.5rem)); display: flex; flex-direction: column; justify-content: center; gap: 1.35rem; padding: clamp(4rem, 15vh, 9rem) max(1rem, calc((100% - 74rem) / 2)); }
+    #hero > :not(.hero-glow):not(.hero-ferrofluid) { position: relative; z-index: 1; }
+    .hero-glow { position: absolute; z-index: 0; top: 50%; left: 50%; width: min(46vw, 32rem); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(109,59,229,.3), rgba(109,59,229,0) 70%); pointer-events: none; transform: translate3d(calc(-50% + var(--hero-glow-x, 0px)), calc(-50% + var(--hero-glow-y, 0px)), 0); will-change: transform; }
+    .hero-glow { transition: transform 90ms linear; }
+    .hero-ferrofluid { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+    #hero.hero-ferrofluid-ready .hero-ferrofluid { opacity: .66; }
+    #hero.hero-ferrofluid-ready .hero-glow { opacity: 0; }
+    #hero .eyebrow { color: var(--purple-dark); font-size: var(--step--1); font-weight: 750; letter-spacing: .08em; }
+    #hero h1 { max-width: 13ch; font-size: var(--step-3); }
+    #hero h1 + p { max-width: 36rem; color: var(--muted); font-size: var(--step-1); line-height: 1.5; }
+    .action-group { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .4rem; }
+    .action-link { position: relative; isolation: isolate; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: .7rem 1.1rem; overflow: hidden; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; font-weight: 680; transition: color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-standard) var(--motion-ease), transform var(--motion-fast) var(--motion-ease); }
+    .action-link--primary { border-color: var(--purple); background: var(--purple); color: white; }
+    .action-link--primary::before { content: ""; position: absolute; z-index: 0; inset: 0; border-radius: inherit; background: var(--purple-dark); transform: scaleX(0); transform-origin: left; transition: transform var(--motion-standard) var(--motion-ease); }
+    .action-link--primary > * { position: relative; z-index: 1; }
+    .motion-arrow { display: inline-block; margin-left: .35em; transition: transform var(--motion-fast) var(--motion-ease); }
+
+    #site-menu a, .brand-link, .resource-links a, #latest article a, .evidence-source a,
+    #top button, .latest-controls button, .filter-controls button, .demo-action, .dialog-action,
+    .demo-dialog__close, .back-to-top {
+      transition: color var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-standard) var(--motion-ease), transform var(--motion-fast) var(--motion-ease);
+    }
+    .back-to-top { transition: color var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-standard) var(--motion-ease), transform var(--motion-fast) var(--motion-ease), opacity var(--motion-standard) var(--motion-ease), visibility var(--motion-standard); }
+
+    .action-link:focus-visible, #site-menu a:focus-visible, .brand-link:focus-visible,
+    .resource-links a:focus-visible, #latest article a:focus-visible, .evidence-source a:focus-visible {
+      color: var(--purple-dark); transform: translateY(-2px);
+    }
+    .action-link:focus-visible .motion-arrow, #site-menu a:focus-visible .motion-arrow,
+    .resource-links a:focus-visible .motion-arrow, #latest article a:focus-visible .motion-arrow,
+    .evidence-source a:focus-visible .motion-arrow { transform: translateX(4px); }
+    .action-link--primary:focus-visible { color: white; box-shadow: 0 10px 24px rgba(75,32,170,.22); transform: translateY(-2px); }
+    .action-link--primary:focus-visible::before { transform: scaleX(1); }
+    #latest article, #demos article, #evidence dl > div, #capabilities article, #technology li {
+      transition: border-color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-standard) var(--motion-ease), transform var(--motion-fast) var(--motion-ease);
+    }
+    #top button:focus-visible, .latest-controls button:not(:disabled):focus-visible,
+    .filter-controls button:not(:disabled):focus-visible, .demo-action:not(:disabled):focus-visible,
+    .dialog-action:not(:disabled):focus-visible, .demo-dialog__close:not(:disabled):focus-visible,
+    .back-to-top:not(:disabled):focus-visible {
+      border-color: var(--purple); color: var(--purple-dark); box-shadow: 0 8px 20px rgba(75,32,170,.14); transform: translateY(-2px);
+    }
+
+    .action-link:active, #site-menu a:active, .brand-link:active, .resource-links a:active,
+    #latest article a:active, .evidence-source a:active, #top button:active,
+    .latest-controls button:not(:disabled):active, .filter-controls button:not(:disabled):active,
+    .demo-action:not(:disabled):active, .dialog-action:not(:disabled):active,
+    .demo-dialog__close:not(:disabled):active, .back-to-top:not(:disabled):active,
+    #latest article:active, #demos article:active, #evidence dl > div:active,
+    #capabilities article:active, #technology li:active {
+      transform: scale(.98);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .action-link:hover, #site-menu a:hover, .brand-link:hover, .resource-links a:hover,
+      #latest article a:hover, .evidence-source a:hover { color: var(--purple-dark); }
+      .action-link:hover .motion-arrow, #site-menu a:hover .motion-arrow,
+      .resource-links a:hover .motion-arrow, #latest article a:hover .motion-arrow,
+      .evidence-source a:hover .motion-arrow { transform: translateX(4px); }
+      .action-link:hover { transform: translateY(-2px); }
+      .action-link--primary:hover { color: white; box-shadow: 0 10px 24px rgba(75,32,170,.22); }
+      .action-link--primary:hover::before { transform: scaleX(1); }
+      #top button:hover, .latest-controls button:not(:disabled):hover,
+      .filter-controls button:not(:disabled):hover, .demo-action:not(:disabled):hover,
+      .dialog-action:not(:disabled):hover, .demo-dialog__close:not(:disabled):hover,
+      .back-to-top:not(:disabled):hover {
+        border-color: var(--purple); color: var(--purple-dark); box-shadow: 0 8px 20px rgba(75,32,170,.14); transform: translateY(-2px);
+      }
+      .latest-controls button[aria-current="true"]:hover,
+      .filter-controls button[aria-pressed="true"]:hover, .demo-action:not(:disabled):hover,
+      .back-to-top:not(:disabled):hover { color: white; }
+      #latest article:hover, #demos article:hover, #evidence dl > div:hover,
+      #capabilities article:hover, #technology li:hover {
+        border-color: rgba(109,59,229,.46); box-shadow: 0 22px 54px rgba(75,32,170,.14); transform: translateY(-4px) scale(1.015);
+      }
+      #latest article h3, #demos article h3, #latest article .latest-action, #demos article .demo-action {
+        transition: transform var(--motion-fast) var(--motion-ease);
+      }
+      #latest article:hover h3, #latest article:focus-within h3,
+      #demos article:hover h3, #demos article:focus-within h3,
+      #latest article:hover .latest-action, #latest article:focus-within .latest-action,
+      #demos article:hover .demo-action, #demos article:focus-within .demo-action { transform: translateY(-2px); }
+      #demos article:hover .demo-media { transform: scale(1.025); }
+      #site-menu a:hover::after { transform: scaleX(1); }
+    }
+
+    #latest { width: 100%; padding-inline: max(1rem, calc((100% - 74rem) / 2)); background: var(--wash); }
+    .latest-viewport { overflow: visible; }
+    .latest-track { position: relative; display: grid; gap: 1rem; align-items: flex-start; }
+    .js .latest-viewport { overflow: hidden; }
+    .js .latest-track { display: flex; gap: 0; transform: translateX(0); transition: transform .42s ease; touch-action: pan-y; }
+    #latest article { display: grid; flex: 0 0 100%; align-content: end; gap: .8rem; min-height: 25rem; padding: clamp(1.4rem, 5vw, 3.4rem); border: 1px solid var(--line); border-radius: var(--radius-lg); background: linear-gradient(145deg, #fbfaff 10%, #e9e0ff 100%); box-shadow: var(--shadow); }
+    .latest-meta { width: max-content; padding: .25rem .65rem; border-radius: 999px; background: rgba(255,255,255,.72); color: var(--purple-dark); font-size: var(--step--1); font-weight: 700; }
+    #latest time, #latest article h3 + p { color: var(--muted); }
+    #latest article a { min-height: 44px; display: inline-flex; align-items: center; width: max-content; color: var(--purple-dark); font-weight: 700; }
+    .latest-controls { display: none; }
+    .js .latest-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: 1rem; }
+    .latest-controls button { min-width: 44px; min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--line); border-radius: 999px; background: white; color: var(--ink); }
+    .latest-dots { display: flex; gap: .35rem; }
+    .latest-dots button { min-width: 44px; padding: 0; }
+    .latest-dots button[aria-current="true"] { border-color: var(--purple); background: var(--purple); color: white; }
+    .latest-status { width: 100%; color: var(--muted); font-size: var(--step--1); }
+    @media (prefers-reduced-motion: reduce) { .latest-track { transition: none; } }
+
+    .filter-controls, .demo-results { display: none; }
+    .js .filter-controls { display: flex; gap: .5rem; overflow-x: auto; padding: .2rem 0 .7rem; scrollbar-width: none; }
+    .js .demo-results { display: block; }
+    .filter-controls::-webkit-scrollbar { display: none; }
+    .filter-controls button { min-height: 44px; flex: 0 0 auto; padding: .55rem 1rem; border: 1px solid var(--line); border-radius: 999px; background: white; color: var(--muted); }
+    .filter-controls button[aria-pressed="true"] { border-color: var(--purple); background: var(--purple); color: white; }
+    .demo-results { margin: 0 0 .75rem; color: var(--muted); font-size: var(--step--1); }
+    .demo-track { display: flex; gap: 1rem; overflow-x: auto; overflow-y: hidden; margin-top: -.25rem; padding: 1.25rem .15rem 1rem; scroll-snap-type: x mandatory; scrollbar-width: none; align-items: stretch; }
+    .demo-track::-webkit-scrollbar { display: none; }
+    .demo-card-track { display: grid; grid-template-columns: repeat(2, min(82vw, 21rem)); gap: 1rem; overflow-x: auto; padding: 0 0 .8rem; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .demo-card-track::-webkit-scrollbar { display: none; }
+    #demos article { position: relative; z-index: 1; display: flex; flex-direction: column; gap: .65rem; flex: 0 0 min(82vw, 28rem); min-width: min(82vw, 28rem); padding: 1.3rem; border: 1px solid var(--line); border-radius: var(--radius); background: white; scroll-snap-align: start; }
+    #demos article p { color: var(--muted); }
+    .demo-meta { color: var(--purple-dark) !important; font-size: var(--step--1); font-weight: 700; }
+    .demo-media { display: flex; align-items: center; gap: .65rem; min-height: 3.5rem; padding: .7rem .8rem; border: 1px solid rgba(75,32,170,.16); border-radius: var(--radius-sm); background: rgba(255,255,255,.62); color: var(--purple-dark); transition: transform var(--motion-standard) var(--motion-ease); }
+    .demo-media__icon { width: 2.25rem; height: 2.25rem; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid rgba(75,32,170,.24); border-radius: .65rem; font-weight: 800; line-height: 1; }
+    .demo-media__copy { display: grid; line-height: 1.3; }
+    .demo-media__copy strong { font-size: var(--step--1); }
+    .demo-media__copy small { color: var(--muted); }
+    .featured-demo { position: relative; overflow: hidden; min-height: clamp(20rem, 58vw, 36rem); margin-bottom: 2rem; border-radius: var(--radius-lg); background: #17121f; box-shadow: var(--shadow); }
+    .featured-demo video { width: 100%; height: 100%; min-height: inherit; display: block; object-fit: cover; opacity: .86; }
+    .featured-demo__overlay { position: absolute; inset: auto 0 0; display: grid; gap: .45rem; padding: clamp(1.2rem, 4vw, 2.4rem); background: linear-gradient(transparent, rgba(15,10,24,.88)); color: white; }
+    .featured-demo__overlay h3 { font-size: var(--step-2); }
+    .featured-demo__overlay p { max-width: 38rem; color: rgba(255,255,255,.78); }
+    .featured-demo__controls { position: absolute; z-index: 3; top: 1rem; right: 1rem; display: flex; gap: .45rem; }
+    .featured-demo__controls button { min-width: 44px; min-height: 44px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(20,12,30,.5); color: white; }
+    .demo-video { width: 100%; aspect-ratio: 16 / 10; min-height: 0; display: block; border-radius: var(--radius-sm); background: #17121f; object-fit: cover; }
+    .cross-embodiment { flex: 0 0 min(82vw, 28rem); min-width: min(82vw, 28rem); box-sizing: border-box; background: var(--violet-wash) !important; }
+    .cross-embodiment > div:first-child { display: flex; flex-direction: column; gap: .65rem; }
+    .cross-embodiment-grid { display: flex; gap: .8rem; min-width: 0; overflow-x: auto; overflow-y: hidden; padding-bottom: .1rem; scroll-snap-type: x mandatory; scrollbar-width: none; align-items: start; }
+    .cross-embodiment-grid::-webkit-scrollbar { display: none; }
+    .cross-embodiment-card { display: grid; grid-template-rows: auto auto; gap: .15rem; flex: 0 0 88%; min-width: 88%; scroll-snap-align: start; }
+    .cross-embodiment-card .demo-video { aspect-ratio: 4 / 3; }
+    .cross-embodiment-card h4 { margin: 0; color: var(--muted); font-size: var(--step-0); font-weight: 400; line-height: 1.65; }
+    .cross-embodiment-card p { color: var(--muted); font-size: var(--step--1); }
+    @media (max-width: 43.99rem) { .cross-embodiment-grid { grid-template-columns: 1fr; } }
+    .demo-dialog__status { animation: coming-soon-pulse 2.8s ease-in-out infinite; }
+    @keyframes coming-soon-pulse { 50% { text-shadow: 0 0 12px rgba(109,59,229,.72); } }
+    @keyframes menu-item-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .demo-action, .contact-trigger { display: none; }
+    .contact-fallback { display: inline-flex; }
+    .js .demo-action { display: block; min-height: 44px; margin-top: auto; border: 0; border-radius: 999px; background: var(--ink); color: white; }
+    .js .contact-trigger { display: inline-flex; }
+    .js .contact-fallback { display: none; }
+    .demo-card-track { display: contents; }
+    .demo-dialog { width: min(92vw, 37rem); max-height: min(84vh, 44rem); padding: 0; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 0 24px 80px rgba(23,22,26,.25); }
+    .demo-dialog::backdrop { background: rgba(23,22,26,.58); }
+    .demo-dialog[data-fallback-open="true"] { position: fixed; z-index: 90; inset: 50% auto auto 50%; display: block; transform: translate(-50%, -50%); }
+    .demo-dialog__inner { display: grid; gap: 1rem; padding: clamp(1.25rem, 5vw, 2rem); }
+    .demo-dialog__close { justify-self: end; min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 999px; background: white; color: var(--ink); }
+    .demo-dialog__label, .demo-dialog__status { color: var(--purple-dark); font-weight: 700; }
+    .demo-dialog__facts { display: grid; gap: .5rem; padding-top: .25rem; border-top: 1px solid var(--line); color: var(--muted); }
+    .demo-dialog-fallback { position: fixed; z-index: 85; inset: 0; display: none; border: 0; background: rgba(23,22,26,.58); }
+    .demo-dialog-fallback[data-open="true"] { display: block; }
+    .dialog-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+    .dialog-action { min-height: 44px; padding: .65rem 1rem; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); font-weight: 700; }
+    .contact-dialog { width: min(92vw, 32rem); padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 0 24px 80px rgba(23,22,26,.25); }
+    .contact-dialog[data-fallback-open="true"] { position: fixed; z-index: 90; inset: 50% auto auto 50%; display: block; transform: translate(-50%, -50%); }
+    .contact-dialog::backdrop { background: rgba(23,22,26,.58); }
+    .contact-dialog__inner { display: grid; gap: 1rem; padding: clamp(1.25rem, 5vw, 2rem); }
+    .manual-copy { display: grid; gap: .4rem; }
+    .manual-copy input { width: 100%; min-height: 44px; padding: .6rem .75rem; border: 1px solid var(--line); border-radius: .6rem; font: inherit; }
+    .toast { position: fixed; z-index: 120; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); width: max-content; max-width: calc(100% - 2rem); padding: .75rem 1rem; transform: translate(-50%, .5rem); border-radius: 999px; background: var(--ink); color: white; opacity: 0; visibility: hidden; transition: .18s ease; }
+    .toast[data-visible="true"] { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+
+    #evidence { width: 100%; padding-inline: max(1rem, calc((100% - 74rem) / 2)); background: var(--violet-wash); color: var(--ink); }
+    #evidence header > p:first-child { color: var(--purple-dark); }
+    #evidence dl { display: grid; gap: 1px; background: #d9d2e9; }
+    #evidence dl > div { padding: 1.5rem; background: rgba(255,255,255,.76); }
+    #evidence dt { color: var(--purple-dark); font-size: var(--step-3); font-weight: 720; letter-spacing: -.055em; }
+    .evidence-value-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    .evidence-counter { display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums; }
+    #evidence dd { margin: .35rem 0 0; color: var(--muted); }
+    .evidence-source { max-width: 55rem; margin-top: 1.5rem; color: var(--muted); font-size: var(--step--1); }
+    .evidence-source a { min-height: 44px; display: inline-flex; align-items: center; }
+
+    #capabilities { display: grid; gap: 0; }
+    #capabilities header { margin-bottom: 2rem; }
+    #capabilities article { padding: 1.5rem 0; border-top: 1px solid var(--line); }
+    #capabilities article h3 { display: flex; align-items: center; gap: .8rem; }
+    #capabilities article h3::before { content: ""; width: .7rem; height: .7rem; border-radius: 50%; background: var(--purple); box-shadow: 0 0 0 .35rem var(--violet-wash); }
+    #capabilities article p { margin: .8rem 0 0 1.5rem; color: var(--muted); }
+
+    #technology { width: 100%; padding-inline: max(1rem, calc((100% - 74rem) / 2)); background: var(--wash); }
+    #technology > header { gap: .55rem; margin-bottom: 1.25rem; }
+    #technology > header > p:last-child { max-width: 42rem; }
+    #technology ol { list-style: none; counter-reset: tech; display: grid; gap: .55rem; }
+    #technology li { counter-increment: tech; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-sm); background: white; color: var(--muted); line-height: 1.45; }
+    #technology li::before { content: "0" counter(tech); display: inline-block; min-width: 2.1rem; margin-right: .45rem; color: var(--purple); font-size: var(--step--1); font-weight: 750; }
+    #technology li strong { color: var(--ink); }
+    details { margin-top: 1rem; border-top: 1px solid var(--line); }
+    summary { min-height: 52px; display: flex; align-items: center; cursor: pointer; font-weight: 700; }
+    details p { padding: .5rem 0 1rem; color: var(--muted); }
+
+    #resources > ul { list-style: none; display: grid; gap: .7rem; }
+    .resource-links li { border-bottom: 1px solid var(--line); }
+    .resource-links a { min-height: 58px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; font-weight: 700; }
+    #resources h3 { margin: 3rem 0 1rem; }
+    #resources h3 + ul { color: var(--muted); padding-left: 1.2rem; list-style: disc; }
+    #about { border-top: 1px solid var(--line); }
+    #about h2 { margin: .8rem 0 1.2rem; }
+    #about h2 + p { max-width: var(--measure); color: var(--muted); font-size: var(--step-1); }
+    #about #cta { width: 100%; margin: 2.5rem 0 0; padding: clamp(2rem, 5vw, 4rem); border-radius: var(--radius-lg); background: var(--violet-wash); }
+    #cta h2 { max-width: 14ch; }
+    #cta h2 + p { max-width: 35rem; margin-top: 1rem; color: var(--muted); }
+    #cta .action-link--primary { background: var(--ink); border-color: var(--ink); }
+
+    footer { display: grid; gap: 1.5rem; padding: 3rem 0 max(3rem, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); color: var(--muted); }
+    footer > p:first-child a { min-height: 44px; display: inline-flex; align-items: center; color: var(--ink); text-decoration: none; font-weight: 850; letter-spacing: .18em; }
+
+    @media (min-width: 44rem) {
+      .js .lang-trigger { display: inline-block; }
+      .js .menu-trigger { display: none; }
+      #site-menu, .js #site-menu { display: flex; align-items: center; gap: 1.2rem; margin-left: 1rem; }
+      #site-menu a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; font-size: var(--step--1); }
+      .menu-trigger { display: none; }
+      #latest article { min-height: 28rem; }
+      .demo-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .demo-card-track { display: contents; }
+      #demos article { min-width: 0; }
+      #evidence dl { grid-template-columns: repeat(3, 1fr); }
+      #evidence dl > div { padding: 1.5rem; }
+      #capabilities { grid-template-columns: repeat(3, 1fr); }
+      #capabilities header { grid-column: 1 / -1; }
+      #capabilities article { padding: 1.7rem; border: 1px solid var(--line); }
+      #capabilities article + article { border-left: 0; }
+      #technology ol { grid-template-columns: repeat(2, 1fr); }
+      footer { grid-template-columns: 1fr auto; align-items: start; }
+      footer > p:last-child { grid-column: 1 / -1; }
+    }
+    @media (min-width: 64rem) {
+      .demo-track { grid-template-columns: 1.6fr 1fr 1fr; }
+      #demos #demo-dual-arm { grid-column: auto; }
+      #technology ol { grid-template-columns: repeat(5, 1fr); }
+    }
+    @media (max-width: 22rem) {
+      :root { --page: min(100% - 1.25rem, 74rem); }
+      #top nav { min-height: 4rem; }
+      #top button { padding-inline: .45rem; font-size: .78rem; }
+      .action-link { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .hero-glow { transform: translate(-50%, -50%) !important; }
+      #site-menu a::after { display: none; }
+      #demos article:hover .demo-media { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">跳至主要内容</a>
+
+  <header id="top">
+    <nav aria-label="主导航" data-i18n-aria-label="a11y.mainNav">
+      <a class="brand-link" href="#hero" aria-label="Kairos 首页" data-i18n-aria-label="a11y.home">KAIROS</a>
+      <button class="nav-action lang-trigger" type="button" aria-label="切换到英文" data-i18n-aria-label="a11y.switchLanguage">中文 / EN</button>
+      <button class="nav-action menu-trigger" type="button" aria-expanded="false" aria-controls="site-menu" data-i18n="nav.menu">菜单</button>
+      <div id="site-menu" data-open="false">
+        <a href="#demos">Demo</a>
+        <a href="#capabilities" data-i18n="nav.capabilities">能力</a>
+        <a href="#technology" data-i18n="nav.technology">技术</a>
+        <a href="#resources" data-i18n="nav.resources">成果</a>
+        <a href="#about" data-i18n="nav.about">关于</a>
+        <a class="has-motion-arrow" href="https://github.com/kairos-agi/kairos" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 Kairos GitHub 仓库" data-i18n-aria-label="a11y.github"><span class="motion-label">GitHub</span><span class="motion-arrow" aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
+  </header>
+  <button class="menu-backdrop" type="button" tabindex="-1" aria-hidden="true" data-open="false"></button>
+
+  <main id="main">
+    <section id="hero" aria-labelledby="hero-title">
+      <span class="hero-glow" aria-hidden="true"></span>
+      <canvas class="hero-ferrofluid" aria-hidden="true"></canvas>
+      <p class="eyebrow motion-reveal" style="--motion-order: 0">KAIROS 3.1 · WORLD–ACTION MODEL</p>
+      <h1 id="hero-title" class="motion-reveal" style="--motion-order: 1" data-i18n="hero.title">理解、生成、预测一体化的具身世界模型</h1>
+      <p class="motion-reveal" style="--motion-order: 2" data-i18n="hero.body">从视觉观察与任务指令出发，生成未来世界状态，并预测机器人可执行动作。</p>
+      <p class="action-group hero-actions motion-reveal" style="--motion-order: 3">
+        <a class="action-link action-link--primary has-motion-arrow" href="#demos" data-i18n="hero.primary"><span class="motion-label">观看全部 Demo</span><span class="motion-arrow" aria-hidden="true">→</span></a>
+        <a class="action-link has-motion-arrow" href="#capabilities" data-i18n="hero.secondary"><span class="motion-label">了解 Kairos 3.1</span><span class="motion-arrow" aria-hidden="true">→</span></a>
+      </p>
+    </section>
+
+    <section id="latest" aria-labelledby="latest-title">
+      <header class="motion-reveal" style="--motion-order: 0">
+        <p>Latest</p>
+        <h2 id="latest-title">最新进展</h2>
+      </header>
+      <div class="latest-viewport motion-reveal" style="--motion-order: 1">
+      <div class="latest-track" role="group" aria-roledescription="轮播" aria-label="最新进展" data-i18n-aria-label="a11y.latestCarousel" data-i18n-aria-roledescription="latest.controls.trackRole">
+      <article class="is-active" role="group" aria-roledescription="幻灯片" aria-label="第 1 张，共 3 张" data-i18n-aria-roledescription="latest.controls.slideRole">
+        <p class="latest-meta">机器人 Demo</p>
+        <p><time datetime="2026-07-02">2026 年 7 月 2 日</time></p>
+        <h3>RoboTwin 2.0 / LIBERO-Plus 动作预测发布</h3>
+        <p>随 Kairos 3.1 开源发布，观察模型如何面向 RoboTwin 2.0 与 LIBERO-Plus 机器人任务组织世界状态和动作预测。</p>
+        <a class="latest-action has-motion-arrow" href="#demos"><span class="motion-label">查看 Demo</span><span class="motion-arrow" aria-hidden="true">→</span></a>
+      </article>
+      <article role="group" aria-roledescription="幻灯片" aria-label="第 2 张，共 3 张" data-i18n-aria-roledescription="latest.controls.slideRole">
+        <p class="latest-meta">模型发布</p>
+        <p><time datetime="2026-07-02">2026 年 7 月 2 日</time></p>
+        <h3>Kairos 3.1 系列开源进展</h3>
+        <p>从公开仓库了解模型、代码、部署说明与后续发布动态。</p>
+        <a class="latest-action has-motion-arrow" href="https://github.com/kairos-agi/kairos" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 Kairos 开源仓库" data-i18n-aria-label="a11y.latestRelease"><span class="motion-label">查看开源仓库</span><span class="motion-arrow" aria-hidden="true">↗</span></a>
+      </article>
+      <article role="group" aria-roledescription="幻灯片" aria-label="第 3 张，共 3 张" data-i18n-aria-roledescription="latest.controls.slideRole">
+        <p class="latest-meta">技术报告</p>
+        <p><time datetime="2026-06-16">2026 年 6 月 16 日</time></p>
+        <h3>World-Action Model 技术脉络</h3>
+        <p>了解理解、未来生成和动作预测如何在统一模型中协同。</p>
+        <a class="latest-action has-motion-arrow" href="#technology"><span class="motion-label">阅读技术概要</span><span class="motion-arrow" aria-hidden="true">→</span></a>
+      </article>
+      </div>
+      </div>
+      <div class="latest-controls" aria-label="轮播控制" data-i18n-aria-label="a11y.latestControls">
+        <button class="latest-previous" type="button" aria-label="上一项">←</button>
+        <div class="latest-dots" role="group" aria-label="选择进展">
+          <button type="button" aria-label="显示第 1 项" aria-current="true">1</button>
+          <button type="button" aria-label="显示第 2 项">2</button>
+          <button type="button" aria-label="显示第 3 项">3</button>
+        </div>
+        <button class="latest-next" type="button" aria-label="下一项">→</button>
+        <button class="latest-pause" type="button" aria-label="暂停自动播放" aria-pressed="false">暂停</button>
+        <p class="latest-status" aria-live="polite" aria-atomic="true">第 1 项，共 3 项</p>
+      </div>
+    </section>
+
+    <section id="demos" aria-labelledby="demos-title">
+      <header class="motion-reveal" style="--motion-order: 0">
+        <p>Robotics in action</p>
+        <h2 id="demos-title">精选机器人任务 Demo</h2>
+        <p>按任务结果理解模型能力。公开视频尚未接入的条目均如实标记为即将上线。</p>
+      </header>
+      <article class="featured-demo motion-reveal" style="--motion-order: 1" data-demo-featured>
+        <video muted loop playsinline preload="metadata"><source src="media/demos/featured-home-long.mp4" type="video/mp4"></video>
+        <div class="featured-demo__overlay"><p class="demo-meta">FEATURED DEMO · 真实家庭场景</p><h3>跨家庭场景的长程任务执行</h3><p>展示机器人在不同家庭环境中持续理解任务、移动、操作与恢复执行。</p><p>长程任务 · 移动操作一体化 · 持续执行</p></div>
+        <div class="featured-demo__controls" aria-label="旗舰 Demo 控制"><button type="button" data-featured-toggle aria-label="播放或暂停">▶</button></div>
+      </article>
+      <div class="filter-controls" role="group" aria-label="Demo 分类筛选">
+        <button type="button" data-demo-filter="all" aria-pressed="true">全部</button>
+        <button type="button" data-demo-filter="long-horizon" aria-pressed="false">长程任务</button>
+        <button type="button" data-demo-filter="dual-arm" aria-pressed="false">双臂协同</button>
+        <button type="button" data-demo-filter="fine-manipulation" aria-pressed="false">精细操作</button>
+        <button type="button" data-demo-filter="recovery" aria-pressed="false">干扰恢复</button>
+        <button type="button" data-demo-filter="cross-embodiment" aria-pressed="false">跨本体</button>
+      </div>
+      <p class="demo-results" aria-live="polite" aria-atomic="true">共 3 个 Demo</p>
+      <div class="demo-track" role="list" aria-label="Demo 列表">
+        <article id="demo-recovery" class="motion-reveal" style="--motion-order: 2" role="listitem" data-demo-id="recovery" data-demo-category="recovery">
+        <p class="demo-meta">任务干扰快速恢复</p>
+        <h3>目标跟随与中断恢复</h3>
+        <p>目标切换后重新趋近，并在中断后恢复任务执行。</p>
+        <video class="demo-video" muted loop playsinline preload="metadata"><source src="media/demos/interruption-recovery.mp4" type="video/mp4"></video>
+        <button class="demo-action" type="button" aria-label="查看双臂协作 Demo 详情">查看详情</button>
+        </article>
+          <article id="demo-long-horizon" class="motion-reveal" style="--motion-order: 3" role="listitem" data-demo-id="long-horizon" data-demo-category="long-horizon">
+        <p class="demo-meta">长程任务理解与持续执行</p>
+        <h3>多任务串联与持续执行</h3>
+        <p>串联移动、抓取与放置，持续完成多阶段任务。</p>
+        <video class="demo-video" muted loop playsinline preload="metadata"><source src="media/demos/long-horizon.mp4" type="video/mp4"></video>
+        <button class="demo-action" type="button">查看详情</button>
+          </article>
+      <article id="demo-cross-embodiment" class="cross-embodiment motion-reveal" style="--motion-order: 4">
+        <div><p class="demo-meta">跨本体泛化</p><h3>同一世界—动作表征，不同机器人本体</h3><p>展示统一能力在不同机器人与任务中的迁移</p></div>
+        <div class="cross-embodiment-grid">
+          <div class="cross-embodiment-card"><video class="demo-video" muted loop playsinline preload="metadata"><source src="media/demos/cross-embodiment/unitree-g1-cucumber.mp4" type="video/mp4"></video><h4>宇树 · G1</h4></div>
+          <div class="cross-embodiment-card"><video class="demo-video" muted loop playsinline preload="metadata"><source src="media/demos/cross-embodiment/brainco-orange.mov" type="video/mp4"></video><h4>BrainCo</h4></div>
+          <div class="cross-embodiment-card"><video class="demo-video" muted loop playsinline preload="metadata"><source src="media/demos/cross-embodiment/agilex-piper.mov" type="video/mp4"></video><h4>松灵 · PIPER</h4></div>
+          <div class="cross-embodiment-card"><video class="demo-video" muted loop playsinline preload="metadata"><source src="media/demos/cross-embodiment/agibot-g1.mp4" type="video/mp4"></video><h4>智元 · 精灵 G1</h4></div>
+        </div>
+        <button class="demo-action" type="button">查看详情</button>
+      </article>
+      </div>
+    </section>
+
+    <section id="evidence" aria-labelledby="evidence-title">
+      <header class="motion-reveal" style="--motion-order: 0">
+        <p>Evidence</p>
+        <h2 id="evidence-title">关键数字与公开证据</h2>
+      </header>
+      <dl>
+        <div class="motion-reveal" style="--motion-order: 1">
+          <dt><span class="evidence-value-sr">4B</span><span class="evidence-counter" aria-hidden="true" data-counter-value="4" data-counter-suffix="B">4B</span></dt>
+          <dd>模型参数规模</dd>
+        </div>
+        <div class="motion-reveal" style="--motion-order: 2">
+          <dt><span class="evidence-value-sr">50+</span><span class="evidence-counter" aria-hidden="true" data-counter-value="50" data-counter-suffix="+">50+</span></dt>
+          <dd>RoboTwin 2.0 所覆盖的双臂任务范围</dd>
+        </div>
+        <div class="motion-reveal" style="--motion-order: 3">
+          <dt><span class="evidence-value-sr evidence-value-sr--localized">11.4 秒</span><span class="evidence-counter" aria-hidden="true" data-counter-value="11.4" data-counter-decimals="1">11.4</span><span class="evidence-counter-unit" aria-hidden="true"> 秒</span></dt>
+          <dd>单张 NVIDIA GeForce RTX 5090 上的推理时间；Kairos-4B-Robot 480p 蒸馏模型、480P 分辨率，显存占用 13.9 GB。</dd>
+        </div>
+      </dl>
+      <p class="evidence-source">来源：<a class="has-motion-arrow" href="https://github.com/kairos-agi/kairos" target="_blank" rel="noopener noreferrer" aria-label="在新标签页查看 Kairos GitHub 公开口径" data-i18n-aria-label="a11y.evidenceSource"><span class="motion-label">Kairos GitHub</span><span class="motion-arrow" aria-hidden="true">↗</span></a>，截至 2026-08。部署结果基于 Kairos-4B-Robot 480p 蒸馏模型；具体性能会随硬件与运行环境变化。</p>
+    </section>
+
+    <section id="capabilities" aria-labelledby="capabilities-title">
+      <header class="motion-reveal" style="--motion-order: 0">
+        <p>Unified capabilities</p>
+        <h2 id="capabilities-title">理解—生成—预测，一体协同</h2>
+      </header>
+      <article class="motion-reveal" style="--motion-order: 1">
+        <h3>世界理解</h3>
+        <p>从多模态输入、物理规律和任务上下文形成因果解释与任务逻辑。</p>
+      </article>
+      <article class="motion-reveal" style="--motion-order: 2">
+        <h3>未来生成</h3>
+        <p>维持持续世界状态，并生成具有物理一致性的未来视觉状态。</p>
+      </article>
+      <article class="motion-reveal" style="--motion-order: 3">
+        <h3>动作预测</h3>
+        <p>从视觉观察与任务上下文直接预测时序连贯、可执行的机器人动作轨迹。</p>
+      </article>
+    </section>
+
+    <section id="technology" aria-labelledby="technology-title">
+      <header class="motion-reveal" style="--motion-order: 0">
+        <p>Technology</p>
+        <h2 id="technology-title">World-Action Model 技术架构</h2>
+        <p>以统一表征连接观察、未来世界状态与可执行动作。</p>
+      </header>
+      <ol>
+        <li class="motion-reveal" style="--motion-order: 1"><strong>Cross-Embodiment Data Curriculum</strong><span>：以跨机器人本体的数据课程组织学习过程。</span></li>
+        <li class="motion-reveal" style="--motion-order: 2"><strong>Unified Understanding–Generation–Prediction</strong><span>：在统一框架中协同世界理解、未来生成与动作预测。</span></li>
+        <li class="motion-reveal" style="--motion-order: 3"><strong>World-Action Model</strong><span>：连接世界状态建模和机器人动作生成。</span></li>
+        <li class="motion-reveal" style="--motion-order: 4"><strong>Hybrid Linear Temporal Memory</strong><span>：面向连续时序信息的混合线性记忆机制。</span></li>
+        <li class="motion-reveal" style="--motion-order: 5"><strong>系统协同设计</strong><span>：围绕高效边缘部署统筹模型与运行系统。</span></li>
+      </ol>
+    </section>
+
+    <section id="resources" aria-labelledby="resources-title">
+      <header class="motion-reveal" style="--motion-order: 0">
+        <p>Open resources</p>
+        <h2 id="resources-title">模型、报告与开源成果</h2>
+      </header>
+      <ul class="resource-links">
+        <li class="motion-reveal" style="--motion-order: 1"><a class="has-motion-arrow" href="https://github.com/kairos-agi/kairos" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 Kairos GitHub 仓库" data-i18n-aria-label="a11y.github"><span class="motion-label">GitHub 仓库</span><span class="motion-arrow" aria-hidden="true">↗</span></a></li>
+        <li class="motion-reveal" style="--motion-order: 2"><a class="has-motion-arrow" href="https://arxiv.org/abs/2606.16533" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 Kairos 技术报告" data-i18n-aria-label="a11y.report"><span class="motion-label">技术报告 / arXiv</span><span class="motion-arrow" aria-hidden="true">↗</span></a></li>
+        <li class="motion-reveal" style="--motion-order: 3"><a class="has-motion-arrow" href="https://huggingface.co/kairos-agi/Kairos3.1-4B-robot-480P" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 Kairos 3.1 Hugging Face 模型" data-i18n-aria-label="a11y.huggingFace"><span class="motion-label">Hugging Face 模型</span><span class="motion-arrow" aria-hidden="true">↗</span></a></li>
+        <li class="motion-reveal" style="--motion-order: 4"><a class="has-motion-arrow" href="https://www.modelscope.cn/models/kairos-team/Kairos3.1-4B-robot-480P" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 Kairos 3.1 ModelScope 模型" data-i18n-aria-label="a11y.modelScope"><span class="motion-label">ModelScope 模型</span><span class="motion-arrow" aria-hidden="true">↗</span></a></li>
+      </ul>
+      <h3>公开里程碑</h3>
+      <ul>
+        <li class="motion-reveal" style="--motion-order: 1">Kairos 3.1 系列发布与开源进展</li>
+        <li class="motion-reveal" style="--motion-order: 2">World-Action Model 技术报告</li>
+        <li class="motion-reveal" style="--motion-order: 3">早期模型与机器人任务探索</li>
+      </ul>
+    </section>
+
+    <section id="about" aria-labelledby="about-title">
+      <p class="motion-reveal" style="--motion-order: 0">About Kairos</p>
+      <h2 id="about-title" class="motion-reveal" style="--motion-order: 1">关于 Kairos</h2>
+      <p class="motion-reveal" style="--motion-order: 2">Kairos Team 专注于具身智能与世界模型研究，探索让机器人从观察和任务语境中理解世界、预测未来并生成可执行动作的方法。</p>
+      <div id="cta" role="group" aria-labelledby="cta-title">
+      <h2 id="cta-title" class="motion-reveal" style="--motion-order: 0">从真实任务开始了解 Kairos</h2>
+      <p class="motion-reveal" style="--motion-order: 1">查看机器人任务、开源成果，或与 Kairos Team 取得联系。</p>
+      <p class="action-group cta-actions motion-reveal" style="--motion-order: 2">
+        <a class="action-link action-link--primary has-motion-arrow" href="#demos"><span class="motion-label">观看全部 Demo</span><span class="motion-arrow" aria-hidden="true">→</span></a>
+        <a class="action-link has-motion-arrow" href="https://github.com/kairos-agi/kairos" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 Kairos GitHub 仓库" data-i18n-aria-label="a11y.github"><span class="motion-label">在 GitHub 查看</span><span class="motion-arrow" aria-hidden="true">↗</span></a>
+        <a class="action-link contact-fallback" href="mailto:contact@kairos.ai">邮件联系：contact@kairos.ai</a>
+        <button class="action-link contact-trigger" type="button">联系我们</button>
+      </p>
+      </div>
+    </section>
+  </main>
+  <button class="demo-dialog-fallback" type="button" aria-hidden="true" tabindex="-1"></button>
+  <dialog class="demo-dialog" aria-labelledby="demo-dialog-title" aria-describedby="demo-dialog-summary">
+    <div class="demo-dialog__inner">
+      <button class="demo-dialog__close" type="button" aria-label="关闭">×</button>
+      <p class="demo-dialog__label">Demo 详情</p>
+      <h2 id="demo-dialog-title">Demo 详情</h2>
+      <p id="demo-dialog-summary"></p>
+      <div class="demo-dialog__facts"><p class="demo-dialog__task"></p><p class="demo-dialog__highlight"></p><p class="demo-dialog__labels"></p></div>
+      <p class="demo-dialog__status">Demo 即将上线</p>
+      <div class="dialog-actions"><button class="dialog-action demo-dialog__share" type="button">分享</button></div>
+      <label class="manual-copy" hidden><span>请手动复制</span><input readonly></label>
+    </div>
+  </dialog>
+  <dialog class="contact-dialog" aria-labelledby="contact-dialog-title">
+    <div class="contact-dialog__inner">
+      <button class="dialog-action contact-dialog__close" type="button" aria-label="关闭">×</button>
+      <h2 id="contact-dialog-title">联系我们</h2>
+      <p>contact@kairos.ai</p>
+      <button class="dialog-action contact-dialog__copy" type="button">复制邮箱</button>
+      <label class="manual-copy" hidden><span>请手动复制</span><input readonly value="contact@kairos.ai"></label>
+    </div>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-visible="false"></div>
+
+  <footer>
+    <p><a href="#top">KAIROS</a></p>
+    <p><small>© 2026 Kairos Team</small></p>
+  </footer>
+  <button class="back-to-top" type="button" aria-label="回到顶部" data-i18n-aria-label="a11y.backToTop"><span class="back-to-top-label" data-i18n="nav.backToTopShort">顶部 ↑</span></button>
+  <script data-hero-glow-controller>
+    (() => {
+      function initHeroGlowFollow() {
+        const hero = document.getElementById('hero');
+        const glow = hero?.querySelector('.hero-glow');
+        if (!hero || !glow || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        hero.onmousemove = event => {
+          const rect = hero.getBoundingClientRect();
+          glow.style.setProperty('--hero-glow-x', `${event.clientX - rect.left - rect.width / 2}px`);
+          glow.style.setProperty('--hero-glow-y', `${event.clientY - rect.top - rect.height / 2}px`);
+        };
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initHeroGlowFollow);
+      else initHeroGlowFollow();
+    })();
+  </script>
+  <script data-hero-ferrofluid-controller>
+    (() => {
+      const hero = document.getElementById('hero');
+      const canvas = hero?.querySelector('.hero-ferrofluid');
+      if (!hero || !canvas) return;
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+      const gl = canvas.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'low-power' });
+      if (!gl) return;
+      const vertex = 'attribute vec2 p; void main(){gl_Position=vec4(p,0.,1.);}';
+      const fragment = `precision mediump float; uniform vec2 r; uniform vec2 m; uniform float t; float n(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);} float f(vec2 p){vec2 i=floor(p),q=fract(p);q=q*q*(3.-2.*q);return mix(mix(n(i),n(i+vec2(1,0)),q.x),mix(n(i+vec2(0,1)),n(i+vec2(1)),q.x),q.y);} void main(){vec2 uv=gl_FragCoord.xy/r.y; vec2 p=uv*3.; float a=f(p+t*.08)+f(p*2.-t*.11)*.5; float b=f(p*1.4+vec2(t*.08,-t*.06)); float band=smoothstep(.42,.66,abs(fract(a+b*.45)-.5)); float cursor=exp(-distance(uv,m)*distance(uv,m)/.035); vec3 c=mix(vec3(.84,.72,.96),vec3(.43,.23,.90),band+cursor*.35); float alpha=band*.42+cursor*.13; gl_FragColor=vec4(c*alpha,alpha);}`;
+      const compile = (type, source) => { const s=gl.createShader(type); gl.shaderSource(s,source); gl.compileShader(s); return gl.getShaderParameter(s,gl.COMPILE_STATUS)?s:null; };
+      const vs=compile(gl.VERTEX_SHADER,vertex), fs=compile(gl.FRAGMENT_SHADER,fragment); if(!vs||!fs)return;
+      const program=gl.createProgram(); gl.attachShader(program,vs); gl.attachShader(program,fs); gl.linkProgram(program); if(!gl.getProgramParameter(program,gl.LINK_STATUS))return;
+      const buffer=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buffer); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW); gl.useProgram(program); const loc=gl.getAttribLocation(program,'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+      const rLoc=gl.getUniformLocation(program,'r'), mLoc=gl.getUniformLocation(program,'m'), tLoc=gl.getUniformLocation(program,'t'); let raf=0, start=performance.now(), mx=.5, my=.5;
+      const resize=()=>{const b=hero.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,1.25); canvas.width=Math.max(1,b.width*d); canvas.height=Math.max(1,b.height*d); gl.viewport(0,0,canvas.width,canvas.height);};
+      const move=e=>{const b=hero.getBoundingClientRect();mx=Math.max(0,Math.min(1,(e.clientX-b.left)/b.width));my=Math.max(0,Math.min(1,1-(e.clientY-b.top)/b.height));};
+      const draw=now=>{raf=requestAnimationFrame(draw);gl.uniform2f(rLoc,canvas.width,canvas.height);gl.uniform2f(mLoc,mx,1-my);gl.uniform1f(tLoc,reduced.matches?0:(now-start)*.001);gl.drawArrays(gl.TRIANGLES,0,3);};
+      resize(); addEventListener('resize',resize,{passive:true}); hero.addEventListener('mousemove',move,{passive:true}); hero.addEventListener('pointermove',move,{passive:true}); hero.classList.add('hero-ferrofluid-ready'); raf=requestAnimationFrame(draw);
+      reduced.addEventListener?.('change',()=>{if(reduced.matches){cancelAnimationFrame(raf);draw(0);}});
+    })();
+  </script>
+  <script data-featured-demo-controller>
+    (() => {
+      const root = document.querySelector('[data-demo-featured]');
+      const video = root?.querySelector('video');
+      const toggle = root?.querySelector('[data-featured-toggle]');
+      if (!root || !video || !toggle) return;
+      const setPlayIcon = () => { toggle.textContent = video.paused ? '▶' : '❚❚'; };
+      const tryPlay = () => video.play().then(setPlayIcon).catch(error => console.error('Featured demo playback failed.', error, video.error, video.currentSrc));
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.load();
+      toggle.onclick = () => { if (video.paused) tryPlay(); else { video.pause(); setPlayIcon(); } };
+      video.addEventListener('play', setPlayIcon);
+      video.addEventListener('pause', setPlayIcon);
+      video.addEventListener('error', () => console.error('Featured demo media error.', video.error, video.currentSrc));
+      if ('IntersectionObserver' in window) new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) tryPlay(); else video.pause(); }), { threshold: .35 }).observe(video);
+      document.querySelectorAll('.demo-video').forEach(smallVideo => {
+        smallVideo.muted = true; smallVideo.loop = true; smallVideo.playsInline = true; smallVideo.load();
+        const playSmall = () => smallVideo.play().catch(error => console.error('Small demo playback failed.', error, smallVideo.error, smallVideo.currentSrc));
+        smallVideo.addEventListener('click', () => { if (smallVideo.paused) playSmall(); else smallVideo.pause(); });
+        smallVideo.addEventListener('error', () => console.error('Small demo media error.', smallVideo.error, smallVideo.currentSrc));
+        if ('IntersectionObserver' in window) new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) playSmall(); else smallVideo.pause(); }), { threshold: .2 }).observe(smallVideo);
+      });
+    })();
+  </script>
+  <script>
+    (() => {
+      'use strict';
+      let enhancementActive = false;
+      let initializing = true;
+      // Lifecycle state is initialized before any setup so rollback is TDZ-safe.
+      let motionController = null;
+      let motionState = null;
+      try {
+
+      const zh = {
+        meta: { title: 'Kairos 世界模型', description: 'Kairos：理解、生成、预测一体化的具身世界模型。' },
+        nav: { menu: '菜单', capabilities: '能力', technology: '技术', resources: '成果', about: '关于', backToTopShort: '顶部 ↑' },
+        hero: { title: '理解、生成、预测一体化的具身世界模型', body: '从视觉观察与任务指令出发，生成未来世界状态，并预测机器人可执行动作。', primary: '观看全部 Demo', secondary: '了解 Kairos 3.1' },
+        latest: {
+          title: '最新进展',
+          controls: { previous: '上一项', next: '下一项', pause: '暂停', play: '播放', pauseLabel: '暂停自动播放', playLabel: '继续自动播放', dots: '选择进展', carousel: '最新进展轮播', controlsLabel: '轮播控制', trackRole: '轮播', slideRole: '幻灯片', slide: '第 {current} 张，共 {total} 张', dot: '显示第 {current} 项', status: '第 {current} 项，共 {total} 项' },
+          items: [
+            { type: '机器人 Demo', date: '2026 年 7 月 2 日', title: 'RoboTwin 2.0 / LIBERO-Plus 动作预测发布', summary: '随 Kairos 3.1 开源发布，观察模型如何面向 RoboTwin 2.0 与 LIBERO-Plus 机器人任务组织世界状态和动作预测。', action: '查看 Demo' },
+            { type: '模型发布', date: '2026 年 7 月 2 日', title: 'Kairos 3.1 系列开源进展', summary: '从公开仓库了解模型、代码、部署说明与后续发布动态。', action: '查看开源仓库 ↗' },
+            { type: '技术报告', date: '2026 年 6 月 16 日', title: 'World-Action Model 技术脉络', summary: '了解理解、未来生成和动作预测如何在统一模型中协同。', action: '阅读技术概要' }
+          ]
+        },
+        demos: {
+          title: '精选机器人任务 Demo', intro: '按任务结果理解模型能力。公开视频尚未接入的条目均如实标记为即将上线。', filters: ['全部', '长程任务', '双臂协同', '精细操作', '干扰恢复', '跨本体'], mediaSubtitle: '公开视频 · 即将上线', mediaSubtitles: ['公开视频 · 即将上线', '公开视频 · 即将上线', '公开视频 · 即将上线'],
+          items: [
+            { id: 'recovery', category: 'recovery', meta: '任务干扰快速恢复', title: '目标跟随与中断恢复', summary: '目标切换后重新趋近，并在中断后恢复任务执行。', task: '任务：目标切换、趋近、中断恢复与运动跟踪', highlight: '亮点：恢复任务状态并继续执行', labels: '标签：目标切换 · 中断恢复 · 运动跟踪', mediaStatus: 'published', shareHash: '#demo-recovery', action: '查看详情', status: '真实 Demo' },
+            { id: 'long-horizon', category: 'long-horizon', meta: '长程任务理解与持续执行', title: '多任务串联与持续执行', summary: '串联移动、抓取与放置，持续完成多阶段任务。', task: '任务：长程移动与操作', highlight: '亮点：跨阶段持续执行', labels: '标签：多任务串联 · 抓取放置 · 移动操作一体化', mediaStatus: 'published', shareHash: '#demo-long-horizon', action: '查看详情', status: '真实 Demo' },
+            { id: 'cross-embodiment', category: 'cross-embodiment', meta: '跨本体泛化', title: '同一任务，不同机器人本体', summary: '探索统一世界—动作表征在不同机器人形态间的迁移潜力。', task: '任务：在不同机器人形态下观察同类任务', highlight: '亮点：展示跨本体研究方向，不陈述未验证结果', labels: '标签：跨本体 · 研究示例', mediaStatus: 'coming-soon', shareHash: '#demo-cross-embodiment', action: '查看详情', status: 'Demo 即将上线' }
+          ]
+        },
+        evidence: { title: '关键数字与公开证据', labels: ['模型参数规模', 'RoboTwin 2.0 所覆盖的双臂任务范围', '单张 NVIDIA GeForce RTX 5090 上的推理时间；Kairos-4B-Robot 480p 蒸馏模型、480P 分辨率，显存占用 13.9 GB。'], source: { before: '来源：', linkText: 'Kairos GitHub ↗', after: '，截至 2026-08。部署结果基于 Kairos-4B-Robot 480p 蒸馏模型；具体性能会随硬件与运行环境变化。' } },
+        capabilities: { title: '理解—生成—预测，一体协同', items: [{ title: '世界理解', body: '从多模态输入、物理规律和任务上下文形成因果解释与任务逻辑。' }, { title: '未来生成', body: '维持持续世界状态，并生成具有物理一致性的未来视觉状态。' }, { title: '动作预测', body: '从视觉观察与任务上下文直接预测时序连贯、可执行的机器人动作轨迹。' }] },
+        technology: { title: 'World-Action Model 技术架构', intro: '以统一表征连接观察、未来世界状态与可执行动作。', items: [{ title: 'Cross-Embodiment Data Curriculum', body: '：以跨机器人本体的数据课程组织学习过程。' }, { title: 'Unified Understanding–Generation–Prediction', body: '：在统一框架中协同世界理解、未来生成与动作预测。' }, { title: 'World-Action Model', body: '：连接世界状态建模和机器人动作生成。' }, { title: 'Hybrid Linear Temporal Memory', body: '：面向连续时序信息的混合线性记忆机制。' }, { title: '系统协同设计', body: '：围绕高效边缘部署统筹模型与运行系统。' }] },
+        resources: { title: '模型、报告与开源成果', links: ['GitHub 仓库 ↗', '技术报告 / arXiv ↗', 'Hugging Face 模型 ↗', 'ModelScope 模型 ↗'], milestonesTitle: '公开里程碑', milestones: ['Kairos 3.1 系列发布与开源进展', 'World-Action Model 技术报告', '早期模型与机器人任务探索'] },
+        about: { title: '关于 Kairos', body: 'Kairos Team 专注于具身智能与世界模型研究，探索让机器人从观察和任务语境中理解世界、预测未来并生成可执行动作的方法。' },
+        cta: { title: '从真实任务开始了解 Kairos', body: '查看机器人任务、开源成果，或与 Kairos Team 取得联系。', demo: '观看全部 Demo', github: '在 GitHub 查看 ↗', contact: '联系我们' },
+        footer: { copyright: '© 2026 Kairos Team' },
+        dialogs: { title: 'Demo 详情', close: '关闭', share: '分享', comingSoon: 'Demo 即将上线', results: '共 {count} 个 Demo', contactTitle: '联系我们', copyEmail: '复制邮箱', manualCopy: '请手动复制' },
+        toast: { copied: '链接已复制', emailCopied: '邮箱已复制', copyFailed: '无法自动复制，请手动复制', shared: '分享面板已打开', deploymentOnly: '部署到网站后即可分享' },
+        a11y: { mediaPending: '视频尚未发布，即将上线', skip: '跳至主要内容', mainNav: '主导航', home: 'Kairos 首页', switchLanguage: '切换到英文', github: '在新标签页打开 Kairos GitHub 仓库', latestRelease: '在新标签页打开 Kairos 开源仓库', latestCarousel: '最新进展轮播', latestControls: '轮播控制', demoFilters: 'Demo 分类筛选', demoList: 'Demo 列表', dualDemo: '查看双臂协作 Demo 详情', evidenceSource: '在新标签页查看 Kairos GitHub 公开口径', report: '在新标签页打开 Kairos 技术报告', huggingFace: '在新标签页打开 Kairos 3.1 Hugging Face 模型', modelScope: '在新标签页打开 Kairos 3.1 ModelScope 模型', backToTop: '回到顶部' }
+      };
+
+      const en = {
+        meta: { title: 'Kairos World Model', description: 'Kairos: a unified embodied world model for understanding, generation, and action prediction.' },
+        nav: { menu: 'Menu', capabilities: 'Capabilities', technology: 'Technology', resources: 'Resources', about: 'About', backToTopShort: 'Top ↑' },
+        hero: { title: 'A unified embodied world model for understanding, generation, and action prediction.', body: 'Starting from visual observations and task instructions, Kairos generates future world states and predicts executable robot actions.', primary: 'View all demos', secondary: 'Explore Kairos 3.1' },
+        latest: { title: 'Latest updates', controls: { previous: 'Previous', next: 'Next', pause: 'Pause', play: 'Play', pauseLabel: 'Pause autoplay', playLabel: 'Resume autoplay', dots: 'Choose an update', carousel: 'Latest updates carousel', controlsLabel: 'Carousel controls', trackRole: 'carousel', slideRole: 'slide', slide: 'Slide {current} of {total}', dot: 'Show update {current}', status: 'Update {current} of {total}' }, items: [{ type: 'Robot demo', date: 'July 2, 2026', title: 'RoboTwin 2.0 / LIBERO-Plus action prediction release', summary: 'Released with Kairos 3.1, this update shows how the model organizes world states and action predictions for RoboTwin 2.0 and LIBERO-Plus tasks.', action: 'View demos' }, { type: 'Model release', date: 'July 2, 2026', title: 'Kairos 3.1 open-source release', summary: 'Explore the public repository for models, code, deployment guidance, and future releases.', action: 'View repository ↗' }, { type: 'Technical report', date: 'June 16, 2026', title: 'Inside the World-Action Model', summary: 'See how understanding, future generation, and action prediction work together in one model.', action: 'Read the overview' }] },
+        demos: { title: 'Featured robot task demos', intro: 'Explore capabilities through task outcomes. Entries without public video are clearly marked as coming soon.', filters: ['All', 'Long-horizon', 'Dual-arm', 'Fine manipulation', 'Recovery', 'Cross-embodiment'], items: [{ id: 'recovery', category: 'recovery', meta: 'Interruption recovery', title: 'Target following and interruption recovery', summary: 'Re-approaches a switched target and resumes execution after interruption.', task: 'Task: target switching, approach, interruption recovery, and tracking', highlight: 'Highlight: recovers the task state and continues execution', labels: 'Labels: target switching · interruption recovery · motion tracking', mediaStatus: 'published', shareHash: '#demo-recovery', action: 'View details', status: 'Real demo' }, { id: 'long-horizon', category: 'long-horizon', meta: 'Long-horizon execution', title: 'Multi-task chaining and sustained execution', summary: 'Chains movement, grasping, and placement across a multi-stage task.', task: 'Task: long-horizon movement and manipulation', highlight: 'Highlight: continuous execution across multiple stages', labels: 'Labels: multi-task chaining · grasp-and-place · mobile manipulation', mediaStatus: 'published', shareHash: '#demo-long-horizon', action: 'View details', status: 'Real demo' }, { id: 'cross-embodiment', category: 'cross-embodiment', meta: 'Cross-embodiment', title: 'One task, different robot embodiments', summary: 'Explores how a unified world-action representation can transfer across robot forms.', task: 'Task: observe a similar task across different robot forms', highlight: 'Highlight: presents a research direction without claiming unverified results', labels: 'Labels: cross-embodiment · research example', mediaStatus: 'coming-soon', shareHash: '#demo-cross-embodiment', action: 'View details', status: 'Demo coming soon' }] },
+        evidence: { title: 'Key figures and public evidence', labels: ['Model parameters', 'Dual-arm task coverage in RoboTwin 2.0', 'Inference time on one NVIDIA GeForce RTX 5090 for the Kairos-4B-Robot 480p distilled model at 480P, using 13.9 GB VRAM.'], source: { before: 'Source: ', linkText: 'Kairos GitHub ↗', after: ', as of 2026-08. Deployment results use the Kairos-4B-Robot 480p distilled model; performance varies by hardware and runtime environment.' } },
+        capabilities: { title: 'Understanding, generation, and prediction—unified', items: [{ title: 'World understanding', body: 'Builds causal explanations and task logic from multimodal input, physical principles, and task context.' }, { title: 'Future generation', body: 'Maintains a persistent world state and generates physically consistent future visual states.' }, { title: 'Action prediction', body: 'Predicts temporally coherent, executable robot action trajectories directly from visual observations and task context.' }] },
+        technology: { title: 'World-Action Model architecture', intro: 'A unified representation connects observations, future world states, and executable actions.', items: [{ title: 'Cross-Embodiment Data Curriculum', body: ': organizes learning through data spanning multiple robot embodiments.' }, { title: 'Unified Understanding–Generation–Prediction', body: ': coordinates world understanding, future generation, and action prediction in one framework.' }, { title: 'World-Action Model', body: ': connects world-state modeling with robot action generation.' }, { title: 'Hybrid Linear Temporal Memory', body: ': a hybrid linear memory mechanism for continuous temporal information.' }, { title: 'System co-design', body: ': coordinates the model and runtime for efficient edge deployment.' }] },
+        resources: { title: 'Models, reports, and open resources', links: ['GitHub repository ↗', 'Technical report / arXiv ↗', 'Hugging Face model ↗', 'ModelScope model ↗'], milestonesTitle: 'Public milestones', milestones: ['Kairos 3.1 release and open-source progress', 'World-Action Model technical report', 'Early models and robot-task exploration'] },
+        about: { title: 'About Kairos', body: 'Kairos Team focuses on embodied intelligence and world-model research, exploring how robots can understand the world, predict the future, and generate executable actions from observations and task context.' },
+        cta: { title: 'Discover Kairos through real tasks', body: 'Explore robot tasks and open resources, or connect with Kairos Team.', demo: 'View all demos', github: 'View on GitHub ↗', contact: 'Contact us' },
+        footer: { copyright: '© 2026 Kairos Team' },
+        dialogs: { title: 'Demo details', close: 'Close', share: 'Share', comingSoon: 'Demo coming soon', results: '{count} demos', contactTitle: 'Contact us', copyEmail: 'Copy email', manualCopy: 'Copy manually' },
+        toast: { copied: 'Link copied', emailCopied: 'Email copied', copyFailed: 'Automatic copy failed. Please copy manually.', shared: 'Share sheet opened', deploymentOnly: 'Sharing is available after deployment.' },
+        a11y: { mediaPending: 'Video not yet published; coming soon', skip: 'Skip to main content', mainNav: 'Main navigation', home: 'Kairos home', switchLanguage: '切换到中文', github: 'Open the Kairos GitHub repository in a new tab', latestRelease: 'Open the Kairos repository in a new tab', latestCarousel: 'Latest updates carousel', latestControls: 'Carousel controls', demoFilters: 'Demo category filters', demoList: 'Demo list', dualDemo: 'View dual-arm coordination demo details', evidenceSource: 'View the public Kairos GitHub source in a new tab', report: 'Open the Kairos technical report in a new tab', huggingFace: 'Open the Kairos 3.1 Hugging Face model in a new tab', modelScope: 'Open the Kairos 3.1 ModelScope model in a new tab', backToTop: 'Back to top' }
+      };
+
+      const textBindings = [
+        ['#latest-title','latest.title'], ['#demos-title','demos.title'], ['#demos header > p:last-child','demos.intro'], ['#evidence-title','evidence.title'], ['#capabilities-title','capabilities.title'], ['#technology-title','technology.title'], ['#technology header > p:last-child','technology.intro'], ['#resources-title','resources.title'], ['#resources h3','resources.milestonesTitle'], ['#about-title','about.title'], ['#about h2 + p','about.body'], ['#cta-title','cta.title'], ['#cta h2 + p','cta.body'], ['footer > p:last-child small','footer.copyright']
+      ];
+      const navBindings = [
+        ['#site-menu a[href="#capabilities"]','nav.capabilities'], ['#site-menu a[href="#technology"]','nav.technology'], ['#site-menu a[href="#resources"]','nav.resources'], ['#site-menu a[href="#about"]','nav.about'],
+        ['footer a[href="#capabilities"]','nav.capabilities'], ['footer a[href="#technology"]','nav.technology'], ['footer a[href="#resources"]','nav.resources'], ['footer a[href="#about"]','nav.about'],
+        ['#cta .cta-actions a:nth-child(1)','cta.demo'], ['#cta .cta-actions a:nth-child(2)','cta.github'], ['#cta .cta-actions .contact-trigger','cta.contact']
+      ];
+      const ariaBindings = [
+        ['#demos .filter-controls','demoFilters'], ['#demos .demo-track','demoList'], ['#demo-recovery .demo-action','dualDemo'], ['#evidence .evidence-source a','evidenceSource'],
+        ['#resources .resource-links li:nth-child(1) a','github'], ['#resources .resource-links li:nth-child(2) a','report'], ['#resources .resource-links li:nth-child(3) a','huggingFace'], ['#resources .resource-links li:nth-child(4) a','modelScope'],
+        ['#cta a[target="_blank"]','github']
+      ];
+      const declarativeBindings = [
+        { selector: '#demo-cross-media', key: 'a11y.mediaPending', kind: 'aria-label' },
+        { selector: '.skip-link', key: 'a11y.skip', kind: 'text' },
+        { selector: '#top nav', key: 'a11y.mainNav', kind: 'aria-label' },
+        { selector: '.brand-link', key: 'a11y.home', kind: 'aria-label' },
+        { selector: '.lang-trigger', key: 'a11y.switchLanguage', kind: 'aria-label' },
+        { selector: '.menu-trigger', key: 'nav.menu', kind: 'text' },
+        { selector: '.back-to-top .back-to-top-label', key: 'nav.backToTopShort', kind: 'text' },
+        { selector: '.back-to-top', key: 'a11y.backToTop', kind: 'aria-label' },
+        { selector: '#site-menu a[href="#capabilities"]', key: 'nav.capabilities', kind: 'text' },
+        { selector: '#site-menu a[href="#technology"]', key: 'nav.technology', kind: 'text' },
+        { selector: '#site-menu a[href="#resources"]', key: 'nav.resources', kind: 'text' },
+        { selector: '#site-menu a[href="#about"]', key: 'nav.about', kind: 'text' },
+        { selector: '#site-menu a[target="_blank"]', key: 'a11y.github', kind: 'aria-label' },
+        { selector: '#hero-title', key: 'hero.title', kind: 'text' },
+        { selector: '#hero > p:not(.eyebrow):not(.action-group)', key: 'hero.body', kind: 'text' },
+        { selector: '#hero .hero-actions a:first-child', key: 'hero.primary', kind: 'text' },
+        { selector: '#hero .hero-actions a:last-child', key: 'hero.secondary', kind: 'text' },
+        { selector: '#latest .latest-track', key: 'a11y.latestCarousel', kind: 'aria-label' },
+        { selector: '#latest .latest-controls', key: 'a11y.latestControls', kind: 'aria-label' },
+        { selector: '#latest article:nth-of-type(2) .latest-action', key: 'a11y.latestRelease', kind: 'aria-label' },
+        { selector: '#evidence .evidence-source a', key: 'a11y.evidenceSource', kind: 'aria-label' },
+        { selector: '#resources .resource-links li:nth-child(1) a', key: 'a11y.github', kind: 'aria-label' },
+        { selector: '#resources .resource-links li:nth-child(2) a', key: 'a11y.report', kind: 'aria-label' },
+        { selector: '#resources .resource-links li:nth-child(3) a', key: 'a11y.huggingFace', kind: 'aria-label' },
+        { selector: '#resources .resource-links li:nth-child(4) a', key: 'a11y.modelScope', kind: 'aria-label' },
+        { selector: '#cta a[target="_blank"]', key: 'a11y.github', kind: 'aria-label' }
+      ];
+      const repeatedBindings = [
+        ['#latest article', ['.latest-meta','time','h3','h3 + p','.latest-action'], 'latest.items', ['type','date','title','summary','action']],
+        ['#demos [data-demo-id]', ['.demo-meta','h3','h3 + p','.demo-action'], 'demos.items', ['meta','title','summary','action']],
+        ['#evidence dd', null, 'evidence.labels'], ['#capabilities article', ['h3','p'], 'capabilities.items', ['title','body']], ['#technology li', ['strong','span'], 'technology.items', ['title','body']], ['#resources .resource-links a', null, 'resources.links'], ['#resources h3 + ul li', null, 'resources.milestones']
+      ];
+      const roleDescriptionBindings = [
+        ['#latest .latest-track', 'latest.controls.trackRole'],
+        ['#latest .latest-track article', 'latest.controls.slideRole']
+      ];
+      const localizedLiteralBindings = [
+        ['#demos .demo-media__copy small', ['公开视频 · 即将上线', 'Public video · Coming soon']],
+        ['#evidence .evidence-value-sr--localized', ['11.4 秒', '11.4 s']],
+        ['#evidence .evidence-counter-unit', [' 秒', ' s']]
+      ];
+      const get = (source, path) => path.split('.').reduce((value, key) => value?.[key], source);
+      const deepFreeze = value => {
+        if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+          Object.values(value).forEach(deepFreeze);
+          Object.freeze(value);
+        }
+        return value;
+      };
+      const content = deepFreeze({ zh, en });
+      // RELEASE BLOCKER: replace contact@kairos.ai with the team-approved public address before production launch.
+      const contactEmail = 'contact@kairos.ai';
+      const state = { lang: 'zh', latestIndex: 0, demoFilter: 'all', activeDemoId: null, contactOpen: false, carouselPaused: false, menuOpen: false };
+      var latestTimer = 0;
+      let latestHover = false;
+      let latestFocus = false;
+      let demoTrigger = null;
+      const stateView = {};
+      Object.keys(state).forEach(key => Object.defineProperty(stateView, key, { enumerable: true, get: () => state[key] }));
+      Object.freeze(stateView);
+
+      const sameShape = (left, right) => {
+        if (Array.isArray(left) || Array.isArray(right)) return Array.isArray(left) && Array.isArray(right) && left.length === right.length && left.every((item, i) => sameShape(item, right[i]));
+        if (left && typeof left === 'object' || right && typeof right === 'object') {
+          if (!left || !right || typeof left !== 'object' || typeof right !== 'object') return false;
+          const leftKeys = Object.keys(left).sort();
+          const rightKeys = Object.keys(right).sort();
+          return leftKeys.length === rightKeys.length && leftKeys.every((key, i) => key === rightKeys[i] && sameShape(left[key], right[key]));
+        }
+        return typeof left === 'string' && typeof right === 'string' && left.length > 0 && right.length > 0;
+      };
+      const expectedCounts = { 'latest.items': 3, 'demos.filters': 6, 'demos.items': 3, 'evidence.labels': 3, 'capabilities.items': 3, 'technology.items': 5, 'resources.links': 4, 'resources.milestones': 3 };
+      const schemaValid = sameShape(content.zh, content.en) && Object.entries(expectedCounts).every(([path, count]) => content.zh && get(content.zh, path)?.length === count && get(content.en, path)?.length === count);
+      const demoManifestValid = ['zh', 'en'].every(lang => content[lang].demos.items.every((item, index, items) =>
+        ['id', 'category', 'title', 'summary', 'task', 'highlight', 'labels', 'mediaStatus', 'shareHash'].every(key => typeof item[key] === 'string' && item[key]) &&
+        ['coming-soon', 'published'].includes(item.mediaStatus) && item.shareHash === `#demo-${item.id}` && items.findIndex(candidate => candidate.id === item.id) === index));
+      if (!schemaValid || !demoManifestValid) throw new Error('Kairos bilingual content schema is invalid.');
+
+      const motionArrowStructureValid = node => {
+        if (!node?.matches?.('.has-motion-arrow')) return true;
+        return node.querySelectorAll(':scope > .motion-label').length === 1 &&
+          node.querySelectorAll(':scope > .motion-arrow[aria-hidden="true"]').length === 1 &&
+          node.children.length === 2;
+      };
+      const setNodeText = (node, value) => {
+        if (!node || typeof value !== 'string') return;
+        if (node.matches?.('.has-motion-arrow')) {
+          if (!motionArrowStructureValid(node)) throw new Error('Kairos motion arrow structure is invalid.');
+          node.querySelector(':scope > .motion-label').textContent = value.replace(/\s*[↗→]$/, '');
+          return;
+        }
+        node.textContent = value;
+      };
+      const setText = (selector, value, root = document) => {
+        const node = root.querySelector(selector);
+        setNodeText(node, value);
+      };
+      const setAttribute = (selector, name, value, root = document) => {
+        const node = root.querySelector(selector);
+        if (node && typeof value === 'string') node.setAttribute(name, value);
+      };
+      const api = {};
+      Object.defineProperties(api, {
+        state: { enumerable: true, get: () => stateView },
+        content: { enumerable: true, get: () => content },
+        setLanguage: { enumerable: true, value: lang => setLanguage(lang) },
+        openMenu: { enumerable: true, value: () => openMenu() },
+        closeMenu: { enumerable: true, value: options => closeMenu(options) },
+        showLatest: { enumerable: true, value: (index, options) => showLatest(index, options) },
+        nextLatest: { enumerable: true, value: options => nextLatest(options) },
+        previousLatest: { enumerable: true, value: options => previousLatest(options) },
+        startLatestAutoplay: { enumerable: true, value: () => startLatestAutoplay() },
+        stopLatestAutoplay: { enumerable: true, value: () => stopLatestAutoplay() }
+        ,setDemoFilter: { enumerable: true, value: filter => setDemoFilter(filter) }
+        ,openDemoDialog: { enumerable: true, value: id => openDemoDialog(id) }
+        ,closeDemoDialog: { enumerable: true, value: () => closeDemoDialog() }
+        ,sharePage: { enumerable: true, value: options => sharePage(options) }
+        ,copyText: { enumerable: true, value: (value, successKey) => copyText(value, successKey) }
+      });
+      window.KairosApp = Object.freeze(api);
+
+      function setLanguage(lang) {
+        if (!enhancementActive && !initializing) return state.lang;
+        const next = lang === 'en' ? 'en' : 'zh';
+        const copy = content[next];
+        const requiredSingletons = [
+          'meta[name="description"]', 'meta[property="og:title"]', 'meta[property="og:description"]', 'meta[name="twitter:title"]', 'meta[name="twitter:description"]',
+          '#demo-recovery > p:last-child', '.demo-results', '.demo-dialog', '.demo-dialog__close', '#demo-dialog-title', '#demo-dialog-summary', '.demo-dialog__task', '.demo-dialog__highlight', '.demo-dialog__labels', '.demo-dialog__status', '.demo-dialog .manual-copy span', '.contact-dialog .manual-copy span', '#evidence .evidence-source', '#evidence .evidence-source a'
+        ];
+        const preflightBindings = [...textBindings, ...navBindings].every(([selector, key]) => document.querySelectorAll(selector).length === 1 && typeof get(copy, key) === 'string');
+        const ariaBindingsValid = ariaBindings.every(([selector, key]) => document.querySelectorAll(selector).length === 1 && typeof copy.a11y[key] === 'string');
+        const declarativeValid = declarativeBindings.every(({ selector, key, kind }) => {
+          const nodes = document.querySelectorAll(selector);
+          const attribute = kind === 'text' ? 'data-i18n' : 'data-i18n-aria-label';
+          return nodes.length === 1 && nodes[0].getAttribute(attribute) === key && typeof get(copy, key) === 'string';
+        }) && document.querySelectorAll('[data-i18n], [data-i18n-aria-label]').length === declarativeBindings.length;
+        const motionArrowsValid = document.querySelectorAll('.has-motion-arrow').length === 13 &&
+          [...document.querySelectorAll('.has-motion-arrow')].every(motionArrowStructureValid);
+        const repeatedValid = repeatedBindings.every(([selector, children, key, fields]) => {
+          const nodes = [...document.querySelectorAll(selector)];
+          const values = get(copy, key);
+          return Array.isArray(values) && nodes.length === values.length && nodes.every((node, i) => children
+            ? children.every((childSelector, j) => node.querySelectorAll(childSelector).length === 1 && typeof values[i]?.[fields[j]] === 'string')
+            : typeof values[i] === 'string');
+        });
+        const roleDescriptionsValid = roleDescriptionBindings.every(([selector, key]) => {
+          const nodes = [...document.querySelectorAll(selector)];
+          return nodes.length > 0 && nodes.every(node => node.getAttribute('data-i18n-aria-roledescription') === key) && typeof get(copy, key) === 'string';
+        }) && document.querySelectorAll('[data-i18n-aria-roledescription]').length === 4;
+        const filters = [...document.querySelectorAll('.filter-controls button')];
+        const source = document.querySelector('#evidence .evidence-source');
+        const sourceNodesValid = source?.childNodes.length === 3 && source.firstChild?.nodeType === Node.TEXT_NODE && source.lastChild?.nodeType === Node.TEXT_NODE;
+        const literalBindingsValid = localizedLiteralBindings.every(([selector, values]) => document.querySelectorAll(selector).length > 0 && values.length === 2 && values.every(value => typeof value === 'string' && value));
+        const preflightValid = requiredSingletons.every(selector => document.querySelectorAll(selector).length === 1) && preflightBindings && ariaBindingsValid && declarativeValid && repeatedValid && roleDescriptionsValid && literalBindingsValid &&
+          filters.length === copy.demos.filters.length && copy.demos.filters.every(value => typeof value === 'string') &&
+          filters.every((node, index) => node.dataset.demoFilter === ['all', 'long-horizon', 'dual-arm', 'fine-manipulation', 'recovery', 'cross-embodiment'][index]) &&
+          document.querySelectorAll('#demos [data-demo-id]').length === copy.demos.items.length &&
+          sourceNodesValid && motionArrowsValid && ['before', 'linkText', 'after'].every(key => typeof copy.evidence.source[key] === 'string');
+        if (!preflightValid) {
+          throw new Error('Kairos DOM/content preflight failed.');
+        }
+        state.lang = next;
+        document.documentElement.lang = next === 'zh' ? 'zh-CN' : 'en';
+        document.title = copy.meta.title;
+        setAttribute('meta[name="description"]', 'content', copy.meta.description);
+        setAttribute('meta[property="og:title"]', 'content', copy.meta.title);
+        setAttribute('meta[property="og:description"]', 'content', copy.meta.description);
+        setAttribute('meta[name="twitter:title"]', 'content', copy.meta.title);
+        setAttribute('meta[name="twitter:description"]', 'content', copy.meta.description);
+        declarativeBindings.forEach(({ selector, key, kind }) => {
+          if (kind === 'text') setText(selector, get(copy, key));
+          else setAttribute(selector, 'aria-label', get(copy, key));
+        });
+        [...textBindings, ...navBindings].forEach(([selector, key]) => setText(selector, get(copy, key)));
+        document.querySelectorAll('.filter-controls button').forEach((node, i) => { if (typeof copy.demos.filters[i] === 'string') node.textContent = copy.demos.filters[i]; });
+        repeatedBindings.forEach(([selector, children, key, fields]) => document.querySelectorAll(selector).forEach((node, i) => {
+          const value = get(copy, key)[i];
+          if (children) children.forEach((childSelector, j) => { const child = node.querySelector(childSelector); if (child && value?.[fields[j]] != null) setNodeText(child, value[fields[j]]); });
+          else if (value != null) setNodeText(node, value);
+        }));
+        roleDescriptionBindings.forEach(([selector, key]) => document.querySelectorAll(selector).forEach(node => node.setAttribute('aria-roledescription', get(copy, key))));
+        localizedLiteralBindings.forEach(([selector, values]) => document.querySelectorAll(selector).forEach(node => { node.textContent = values[next === 'en' ? 1 : 0]; }));
+        setText('#demo-recovery > p:last-child', copy.demos.items[0].status);
+        updateDemoCopy();
+        setText('.demo-dialog__share', copy.dialogs.share);
+        setText('#contact-dialog-title', copy.dialogs.contactTitle);
+        setText('.contact-dialog__copy', copy.dialogs.copyEmail);
+        document.querySelectorAll('.manual-copy span').forEach(node => { node.textContent = copy.dialogs.manualCopy; });
+        setAttribute('.contact-dialog__close', 'aria-label', copy.dialogs.close);
+        ariaBindings.forEach(([selector, key]) => document.querySelectorAll(selector).forEach(node => node.setAttribute('aria-label', copy.a11y[key])));
+        source.firstChild.textContent = copy.evidence.source.before;
+        setNodeText(source.querySelector('a'), copy.evidence.source.linkText);
+        source.lastChild.textContent = copy.evidence.source.after;
+        updateLatestCopy();
+        try { localStorage.setItem('kairos-language', next); } catch (_) { /* Persistence is optional. */ }
+        motionController?.refreshLanguage();
+        return next;
+      }
+      const languageButton = document.querySelector('.lang-trigger');
+      if (languageButton) languageButton.addEventListener('click', () => setLanguage(state.lang === 'zh' ? 'en' : 'zh'));
+      let initial = 'zh';
+      try { const stored = localStorage.getItem('kairos-language'); if (stored === 'zh' || stored === 'en') initial = stored; } catch (_) { /* Chinese remains the deterministic fallback. */ }
+
+      const menuButton = document.querySelector('.menu-trigger');
+      const siteMenu = document.querySelector('#site-menu');
+      const menuBackdrop = document.querySelector('.menu-backdrop');
+      const backToTop = document.querySelector('.back-to-top');
+      const desktopQuery = window.matchMedia('(min-width: 44rem)');
+      const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      const latestNodes = () => ({
+        section: document.querySelector('#latest'), track: document.querySelector('.latest-track'),
+        slides: [...document.querySelectorAll('#latest .latest-track article')], dots: [...document.querySelectorAll('.latest-dots button')],
+        previous: document.querySelector('.latest-previous'), next: document.querySelector('.latest-next'), pause: document.querySelector('.latest-pause'),
+        status: document.querySelector('.latest-status'), dotsGroup: document.querySelector('.latest-dots')
+      });
+      const formatLatest = (template, current, total) => template.replace('{current}', String(current)).replace('{total}', String(total));
+
+      function updateLatestCopy({ announce = false } = {}) {
+        if (!enhancementActive) return false;
+        const nodes = latestNodes();
+        const copy = content[state.lang].latest.controls;
+        const total = nodes.slides.length;
+        nodes.track?.setAttribute('aria-label', copy.carousel);
+        nodes.track?.setAttribute('aria-roledescription', copy.trackRole);
+        nodes.section?.querySelector('.latest-controls')?.setAttribute('aria-label', copy.controlsLabel);
+        nodes.dotsGroup?.setAttribute('aria-label', copy.dots);
+        nodes.previous?.setAttribute('aria-label', copy.previous);
+        nodes.next?.setAttribute('aria-label', copy.next);
+        nodes.slides.forEach((slide, index) => {
+          slide.setAttribute('aria-roledescription', copy.slideRole);
+          slide.setAttribute('aria-label', formatLatest(copy.slide, index + 1, total));
+        });
+        nodes.dots.forEach((dot, index) => dot.setAttribute('aria-label', formatLatest(copy.dot, index + 1, total)));
+        if (nodes.status) {
+          nodes.status.setAttribute('aria-live', announce ? 'polite' : 'off');
+          nodes.status.textContent = formatLatest(copy.status, state.latestIndex + 1, total);
+        }
+        if (nodes.pause) {
+          nodes.pause.textContent = state.carouselPaused ? copy.play : copy.pause;
+          nodes.pause.setAttribute('aria-label', state.carouselPaused ? copy.playLabel : copy.pauseLabel);
+          nodes.pause.setAttribute('aria-pressed', String(state.carouselPaused));
+        }
+      }
+
+      function showLatest(index, { userInitiated = false } = {}) {
+        if (!enhancementActive) return state.latestIndex;
+        const nodes = latestNodes();
+        if (!nodes.slides.length || !Number.isFinite(Number(index))) return state.latestIndex;
+        state.latestIndex = ((Math.trunc(Number(index)) % nodes.slides.length) + nodes.slides.length) % nodes.slides.length;
+        nodes.track.style.transform = `translateX(${-100 * state.latestIndex}%)`;
+        nodes.slides.forEach((slide, itemIndex) => {
+          const active = itemIndex === state.latestIndex;
+          slide.classList.toggle('is-active', active);
+          if ('inert' in HTMLElement.prototype) slide.toggleAttribute('inert', !active);
+          else slide.querySelectorAll('a[href], button, input, select, textarea, [tabindex]').forEach(node => {
+            if (!active) {
+              if (!node.hasAttribute('data-latest-original-tabindex')) node.setAttribute('data-latest-original-tabindex', node.hasAttribute('tabindex') ? node.getAttribute('tabindex') : '__none__');
+              node.setAttribute('tabindex', '-1');
+            } else if (node.hasAttribute('data-latest-original-tabindex')) {
+              const original = node.getAttribute('data-latest-original-tabindex');
+              if (original === '__none__') node.removeAttribute('tabindex'); else node.setAttribute('tabindex', original);
+              node.removeAttribute('data-latest-original-tabindex');
+            }
+          });
+          if (active) slide.removeAttribute('aria-hidden'); else slide.setAttribute('aria-hidden', 'true');
+        });
+        nodes.dots.forEach((dot, itemIndex) => itemIndex === state.latestIndex ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current'));
+        updateLatestCopy({ announce: userInitiated });
+        if (userInitiated) scheduleLatestAutoplay();
+        return state.latestIndex;
+      }
+
+      function clearLatestAutoplay() {
+        if (latestTimer) window.clearInterval(latestTimer);
+        latestTimer = 0;
+        return false;
+      }
+
+      function scheduleLatestAutoplay() {
+        clearLatestAutoplay();
+        if (!enhancementActive || state.carouselPaused || reducedMotionQuery.matches || document.hidden || latestHover || latestFocus) return false;
+        latestTimer = window.setInterval(() => { if (enhancementActive) showLatest(state.latestIndex + 1); }, 6000);
+        return true;
+      }
+
+      function stopLatestAutoplay() {
+        if (!enhancementActive) return false;
+        state.carouselPaused = true;
+        clearLatestAutoplay();
+        updateLatestCopy({ announce: true });
+        return false;
+      }
+
+      function startLatestAutoplay() {
+        if (!enhancementActive) return false;
+        state.carouselPaused = false;
+        updateLatestCopy({ announce: true });
+        return scheduleLatestAutoplay();
+      }
+
+      function nextLatest(options) { return showLatest(state.latestIndex + 1, options); }
+      function previousLatest(options) { return showLatest(state.latestIndex - 1, options); }
+
+      const latest = latestNodes();
+      latest.previous?.addEventListener('click', () => previousLatest({ userInitiated: true }));
+      latest.next?.addEventListener('click', () => nextLatest({ userInitiated: true }));
+      latest.dots.forEach((dot, index) => dot.addEventListener('click', () => showLatest(index, { userInitiated: true })));
+      latest.pause?.addEventListener('click', () => {
+        if (state.carouselPaused) startLatestAutoplay(); else stopLatestAutoplay();
+      });
+      latest.section?.addEventListener('mouseenter', () => { if (!enhancementActive) return; latestHover = true; clearLatestAutoplay(); });
+      latest.section?.addEventListener('mouseleave', () => { if (!enhancementActive) return; latestHover = false; scheduleLatestAutoplay(); });
+      latest.section?.addEventListener('focusin', () => { if (!enhancementActive) return; latestFocus = true; clearLatestAutoplay(); });
+      latest.section?.addEventListener('focusout', event => {
+        if (!enhancementActive) return;
+        if (!latest.section.contains(event.relatedTarget)) { latestFocus = false; scheduleLatestAutoplay(); }
+      });
+      let pointerStart = null;
+      let suppressLatestClick = false;
+      latest.track?.addEventListener('pointerdown', event => {
+        if (!enhancementActive) return;
+        if (!event.isPrimary) return;
+        pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+        latest.track.setPointerCapture?.(event.pointerId);
+      });
+      latest.track?.addEventListener('pointerup', event => {
+        if (!enhancementActive) return;
+        if (!pointerStart || pointerStart.id !== event.pointerId) return;
+        const deltaX = event.clientX - pointerStart.x;
+        const deltaY = event.clientY - pointerStart.y;
+        latest.track.releasePointerCapture?.(event.pointerId);
+        pointerStart = null;
+        if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) return;
+        suppressLatestClick = true;
+        if (deltaX < 0) nextLatest({ userInitiated: true }); else previousLatest({ userInitiated: true });
+      });
+      latest.track?.addEventListener('pointercancel', event => { if (!enhancementActive) return; latest.track.releasePointerCapture?.(event.pointerId); pointerStart = null; });
+      latest.track?.addEventListener('click', event => {
+        if (!enhancementActive) return;
+        if (!suppressLatestClick) return;
+        suppressLatestClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+      }, true);
+      document.addEventListener('visibilitychange', () => {
+        if (!enhancementActive) return;
+        if (document.hidden) { clearLatestAutoplay(); motionController?.pause(); }
+        else { scheduleLatestAutoplay(); motionController?.init(); }
+      });
+      const syncLatestMotion = () => {
+        if (!enhancementActive) return false;
+        if (reducedMotionQuery.matches) {
+          clearLatestAutoplay();
+          motionController?.pause();
+        } else {
+          scheduleLatestAutoplay();
+          motionController?.init();
+        }
+        return true;
+      };
+      if (reducedMotionQuery.addEventListener) reducedMotionQuery.addEventListener('change', syncLatestMotion);
+      else reducedMotionQuery.addListener?.(syncLatestMotion);
+      showLatest(state.latestIndex);
+      scheduleLatestAutoplay();
+
+      const demoDialog = document.querySelector('.demo-dialog');
+      const demoFallback = document.querySelector('.demo-dialog-fallback');
+      const demoCards = () => [...document.querySelectorAll('#demos [data-demo-id]')];
+      const demoItem = id => content[state.lang].demos.items.find(item => item.id === id);
+      let dialogIsolation = [];
+
+      function isolateBackgroundForDialog() {
+        if (!enhancementActive) return;
+        if (dialogIsolation.length) return;
+        const targets = [...document.querySelectorAll('body > header, body > main, body > footer, body > .back-to-top')];
+        dialogIsolation = targets.map(node => {
+          const record = { node, inert: node.inert, ariaHidden: node.getAttribute('aria-hidden'), tabStops: [] };
+          if ('inert' in HTMLElement.prototype) node.inert = true;
+          else {
+            node.setAttribute('aria-hidden', 'true');
+            node.querySelectorAll('a[href], button, input, select, textarea, [tabindex]').forEach(control => {
+              record.tabStops.push([control, control.getAttribute('tabindex')]);
+              control.setAttribute('tabindex', '-1');
+            });
+          }
+          return record;
+        });
+      }
+
+      function restoreBackgroundAfterDialog() {
+        dialogIsolation.forEach(({ node, inert, ariaHidden, tabStops }) => {
+          if ('inert' in HTMLElement.prototype) node.inert = inert;
+          else {
+            if (ariaHidden === null) node.removeAttribute('aria-hidden'); else node.setAttribute('aria-hidden', ariaHidden);
+            tabStops.forEach(([control, tabindex]) => tabindex === null ? control.removeAttribute('tabindex') : control.setAttribute('tabindex', tabindex));
+          }
+        });
+        dialogIsolation = [];
+      }
+
+      const canRestoreDemoFocus = node => node instanceof HTMLElement && node.isConnected && !node.disabled && !node.closest('[hidden], [aria-hidden="true"], [inert]') && node.getClientRects().length > 0;
+      function restoreDemoFocus(id, preferred) {
+        const cardAction = demoCards().find(card => card.dataset.demoId === id)?.querySelector('.demo-action');
+        const fallback = [preferred, cardAction, document.querySelector('#demos-title'), document.querySelector('#demos'), menuButton].find(canRestoreDemoFocus);
+        if (!fallback) return;
+        if (!fallback.matches('a[href], button, input, select, textarea, [tabindex]')) fallback.setAttribute('tabindex', '-1');
+        fallback.focus({ preventScroll: true });
+      }
+
+      function updateDemoCopy() {
+        if (!enhancementActive) return false;
+        const copy = content[state.lang];
+        const visible = demoCards().filter(card => !card.hidden).length;
+        setText('.demo-results', copy.dialogs.results.replace('{count}', String(visible)));
+        setText('.demo-dialog__label', copy.dialogs.title);
+        setText('.demo-dialog__status', copy.dialogs.comingSoon);
+        setAttribute('.demo-dialog__close', 'aria-label', copy.dialogs.close);
+        if (state.activeDemoId) populateDemoDialog(state.activeDemoId);
+      }
+
+      function setDemoFilter(filter) {
+        if (!enhancementActive) return state.demoFilter;
+        const valid = ['all', 'long-horizon', 'dual-arm', 'fine-manipulation', 'recovery', 'cross-embodiment'];
+        if (!valid.includes(filter)) return state.demoFilter;
+        const dialogWasOpen = Boolean(state.activeDemoId);
+        if (dialogWasOpen) closeDemoDialog({ restoreFocus: false });
+        state.demoFilter = filter;
+        let selectedButton = null;
+        document.querySelectorAll('.filter-controls [data-demo-filter]').forEach(button => {
+          const selected = button.dataset.demoFilter === filter;
+          if (selected) selectedButton = button;
+          button.setAttribute('aria-pressed', String(selected));
+          if (selected) button.setAttribute('aria-current', 'true'); else button.removeAttribute('aria-current');
+        });
+        demoCards().forEach(card => { card.hidden = filter !== 'all' && card.dataset.demoCategory !== filter; });
+        updateDemoCopy();
+        if (dialogWasOpen) selectedButton?.focus({ preventScroll: true });
+        return filter;
+      }
+
+      function populateDemoDialog(id) {
+        if (!enhancementActive) return false;
+        const item = demoItem(id);
+        if (!item || !demoDialog) return false;
+        setText('#demo-dialog-title', item.title, demoDialog);
+        setText('#demo-dialog-summary', item.summary, demoDialog);
+        setText('.demo-dialog__task', item.task, demoDialog);
+        setText('.demo-dialog__highlight', item.highlight, demoDialog);
+        setText('.demo-dialog__labels', item.labels, demoDialog);
+        setText('.demo-dialog__status', content[state.lang].dialogs.comingSoon, demoDialog);
+        setText('.demo-dialog__share', content[state.lang].dialogs.share, demoDialog);
+        return true;
+      }
+
+      function openDemoDialog(id) {
+        if (!enhancementActive) return false;
+        if (state.activeDemoId && state.activeDemoId !== id) operationSequence += 1;
+        if (!populateDemoDialog(id) || !demoDialog) return false;
+        resetManualCopy(demoDialog);
+        if (state.activeDemoId) {
+          state.activeDemoId = id;
+          if (demoItem(id)?.shareHash && window.location.hash !== demoItem(id).shareHash) history.replaceState(null, '', demoItem(id).shareHash);
+          return true;
+        }
+        if (state.menuOpen) closeMenu({ restoreFocus: false });
+        demoTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        state.activeDemoId = id;
+        if (demoItem(id)?.shareHash && window.location.hash !== demoItem(id).shareHash) history.replaceState(null, '', demoItem(id).shareHash);
+        document.body.classList.add('dialog-open');
+        isolateBackgroundForDialog();
+        let nativeOpened = false;
+        if (typeof demoDialog.showModal === 'function') {
+          try { demoDialog.showModal(); nativeOpened = true; } catch (_) { nativeOpened = false; }
+        }
+        if (!nativeOpened) {
+          demoDialog.setAttribute('open', '');
+          demoDialog.dataset.fallbackOpen = 'true';
+          demoDialog.setAttribute('role', 'dialog');
+          demoDialog.setAttribute('aria-modal', 'true');
+          demoFallback.dataset.open = 'true';
+        }
+        demoDialog.querySelector('.demo-dialog__close')?.focus();
+        return true;
+      }
+
+      function closeDemoDialog({ restoreFocus = true } = {}) {
+        if (!enhancementActive) return false;
+        if (!demoDialog || !state.activeDemoId) return false;
+        const closingId = state.activeDemoId;
+        state.activeDemoId = null;
+        operationSequence += 1;
+        if (window.location.hash === `#demo-${closingId}`) history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+        resetManualCopy(demoDialog);
+        if (typeof demoDialog.close === 'function' && demoDialog.open) demoDialog.close();
+        else demoDialog.removeAttribute('open');
+        delete demoDialog.dataset.fallbackOpen;
+        demoFallback.dataset.open = 'false';
+        document.body.classList.remove('dialog-open');
+        const restore = demoTrigger;
+        demoTrigger = null;
+        restoreBackgroundAfterDialog();
+        if (restoreFocus) restoreDemoFocus(closingId, restore);
+        return true;
+      }
+
+      document.querySelectorAll('.filter-controls [data-demo-filter]').forEach(button => button.addEventListener('click', () => setDemoFilter(button.dataset.demoFilter)));
+      demoCards().forEach(card => card.querySelector('.demo-action')?.addEventListener('click', () => openDemoDialog(card.dataset.demoId)));
+      demoDialog?.querySelector('.demo-dialog__close')?.addEventListener('click', closeDemoDialog);
+      demoFallback?.addEventListener('click', closeDemoDialog);
+      demoDialog?.addEventListener('cancel', event => { event.preventDefault(); closeDemoDialog(); });
+      demoDialog?.addEventListener('click', event => {
+        if (event.target !== demoDialog || typeof demoDialog.showModal !== 'function') return;
+        const bounds = demoDialog.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDemoDialog();
+      });
+      demoDialog?.querySelector('.demo-dialog__share')?.addEventListener('click', () => {
+        const item = demoItem(state.activeDemoId);
+        if (item) sharePage({ title: item.title, text: item.summary, hash: item.shareHash });
+      });
+      setDemoFilter(state.demoFilter);
+
+      const contactDialog = document.querySelector('.contact-dialog');
+      const toast = document.querySelector('.toast');
+      let toastTimer = 0;
+      let operationSequence = 0;
+      function showToast(key) {
+        if (!enhancementActive) return false;
+        if (!toast) return false;
+        toast.textContent = content[state.lang].toast[key] || content[state.lang].toast.copyFailed;
+        toast.dataset.visible = 'true';
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => { toast.dataset.visible = 'false'; }, 3200);
+        return true;
+      }
+
+      function resetManualCopy(root) {
+        const manual = root?.querySelector('.manual-copy');
+        if (!manual) return false;
+        manual.hidden = true;
+        return true;
+      }
+
+      function revealManualCopy(value, manual) {
+        if (!manual) return false;
+        const input = manual.querySelector('input');
+        manual.hidden = false;
+        if (input) { input.value = value; input.focus(); input.select(); }
+        return true;
+      }
+
+      async function copyText(value, successKey = 'copied', operation) {
+        if (!enhancementActive) return false;
+        const text = String(value || '');
+        if (!text) { showToast('copyFailed'); return false; }
+        const context = operation || { token: ++operationSequence, manual: (state.contactOpen ? contactDialog : demoDialog)?.querySelector('.manual-copy') };
+        let field = null;
+        try {
+          if (navigator.clipboard?.writeText && window.isSecureContext) await navigator.clipboard.writeText(text);
+          else {
+            field = document.createElement('textarea');
+            field.value = text;
+            field.setAttribute('readonly', '');
+            field.style.cssText = 'position:fixed;left:-9999px;top:0';
+            document.body.appendChild(field);
+            field.select();
+            const copied = typeof document.execCommand === 'function' && document.execCommand('copy');
+            if (!copied) throw new Error('copy unsupported');
+          }
+          if (context.token !== operationSequence) return false;
+          resetManualCopy(context.manual?.closest('dialog'));
+          showToast(successKey);
+          return true;
+        } catch (_) {
+          if (context.token !== operationSequence) return false;
+          revealManualCopy(text, context.manual);
+          showToast('copyFailed');
+          return false;
+        } finally {
+          field?.remove();
+        }
+      }
+
+      async function sharePage({ title, text, hash } = {}) {
+        if (!enhancementActive) return false;
+        const context = { token: ++operationSequence, manual: demoDialog?.querySelector('.manual-copy') };
+        const url = new URL(window.location.href);
+        if (!['http:', 'https:'].includes(url.protocol)) { showToast('deploymentOnly'); return false; }
+        url.username = ''; url.password = ''; url.search = ''; url.hash = /^#demo-(dual-arm|daily|cross-embodiment)$/.test(hash || '') ? hash : '';
+        const payload = { title: title || document.title, text: text || content[state.lang].meta.description, url: url.href };
+        if (typeof navigator.share === 'function') {
+          try { await navigator.share(payload); if (context.token !== operationSequence) return false; showToast('shared'); return true; }
+          catch (error) { if (error?.name === 'AbortError') return false; }
+        }
+        return copyText(payload.url, 'copied', context);
+      }
+
+      function openContactDialog() {
+        if (!enhancementActive) return false;
+        if (!contactDialog || state.activeDemoId || state.contactOpen) return false;
+        if (state.menuOpen) closeMenu({ restoreFocus: false });
+        demoTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        state.contactOpen = true;
+        resetManualCopy(contactDialog);
+        document.body.classList.add('dialog-open');
+        isolateBackgroundForDialog();
+        let nativeOpened = false;
+        if (typeof contactDialog.showModal === 'function') {
+          try { contactDialog.showModal(); nativeOpened = true; } catch (_) { nativeOpened = false; }
+        }
+        if (!nativeOpened) {
+          contactDialog.setAttribute('open', '');
+          contactDialog.dataset.fallbackOpen = 'true';
+          contactDialog.setAttribute('role', 'dialog');
+          contactDialog.setAttribute('aria-modal', 'true');
+          demoFallback.dataset.open = 'true';
+          demoFallback.dataset.owner = 'contact';
+        }
+        contactDialog.querySelector('.contact-dialog__close')?.focus();
+        return true;
+      }
+
+      function closeContactDialog() {
+        if (!enhancementActive) return false;
+        if (!contactDialog || !state.contactOpen) return false;
+        state.contactOpen = false;
+        operationSequence += 1;
+        resetManualCopy(contactDialog);
+        if (typeof contactDialog.close === 'function' && contactDialog.open) contactDialog.close(); else contactDialog.removeAttribute('open');
+        delete contactDialog.dataset.fallbackOpen;
+        contactDialog.removeAttribute('role');
+        contactDialog.removeAttribute('aria-modal');
+        if (demoFallback.dataset.owner === 'contact') { demoFallback.dataset.open = 'false'; delete demoFallback.dataset.owner; }
+        document.body.classList.remove('dialog-open');
+        restoreBackgroundAfterDialog();
+        const restore = demoTrigger; demoTrigger = null;
+        restore?.focus?.({ preventScroll: true });
+        return true;
+      }
+      document.querySelector('.contact-trigger')?.addEventListener('click', openContactDialog);
+      contactDialog?.querySelector('.contact-dialog__close')?.addEventListener('click', closeContactDialog);
+      contactDialog?.querySelector('.contact-dialog__copy')?.addEventListener('click', () => copyText(contactEmail, 'emailCopied'));
+      contactDialog?.addEventListener('cancel', event => { event.preventDefault(); closeContactDialog(); });
+      demoFallback?.addEventListener('click', () => { if (state.contactOpen) closeContactDialog(); });
+      function syncDemoHash() {
+        if (!enhancementActive) return false;
+        const id = window.location.hash.match(/^#demo-(dual-arm|daily|cross-embodiment)$/)?.[1];
+        if (id) openDemoDialog(id);
+        else if (state.activeDemoId) closeDemoDialog();
+      }
+      window.addEventListener('hashchange', syncDemoHash);
+      if (window.location.hash.startsWith('#demo-')) window.requestAnimationFrame(syncDemoHash);
+
+      function openMenu() {
+        if (!enhancementActive) return false;
+        if (!menuButton || !siteMenu || desktopQuery.matches || state.activeDemoId || state.contactOpen || demoDialog?.open) return false;
+        state.menuOpen = true;
+        document.body.classList.add('menu-open');
+        menuButton.setAttribute('aria-expanded', 'true');
+        siteMenu.dataset.open = 'true';
+        menuBackdrop.dataset.open = 'true';
+        if (!reducedMotionQuery.matches) {
+          siteMenu.querySelectorAll('a').forEach((link, index) => link.style.setProperty('--menu-motion-order', index));
+          siteMenu.classList.remove('menu-items-entering');
+          void siteMenu.offsetWidth;
+          siteMenu.classList.add('menu-items-entering');
+        }
+        siteMenu.querySelector('a')?.focus();
+        return true;
+      }
+
+      function closeMenu({ restoreFocus = true } = {}) {
+        if (!enhancementActive) return false;
+        if (!menuButton || !siteMenu) return false;
+        const wasOpen = state.menuOpen;
+        state.menuOpen = false;
+        document.body.classList.remove('menu-open');
+        menuButton.setAttribute('aria-expanded', 'false');
+        siteMenu.dataset.open = 'false';
+        siteMenu.classList.remove('menu-items-entering');
+        menuBackdrop.dataset.open = 'false';
+        menuBackdrop.setAttribute('aria-hidden', 'true');
+        if (wasOpen && restoreFocus) menuButton.focus();
+        return wasOpen;
+      }
+
+      function focusAnchorTarget(anchor) {
+        if (!enhancementActive) return;
+        const id = anchor.hash && decodeURIComponent(anchor.hash.slice(1));
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (!target) return;
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        window.requestAnimationFrame(() => target.focus({ preventScroll: true }));
+      }
+
+      menuButton?.addEventListener('click', () => state.menuOpen ? closeMenu() : openMenu());
+      menuBackdrop?.addEventListener('click', () => closeMenu());
+      document.addEventListener('keydown', event => {
+        if (!enhancementActive) return;
+        if (event.key === 'Tab' && (state.activeDemoId || state.contactOpen)) {
+          const activeDialog = state.contactOpen ? contactDialog : demoDialog;
+          const focusable = [...activeDialog.querySelectorAll('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+            .filter(node => !node.hidden && node.getClientRects().length > 0);
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (!first) event.preventDefault();
+          else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+          else if (!activeDialog.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); }
+        }
+        if (event.key === 'Escape' && state.contactOpen) { event.preventDefault(); closeContactDialog(); return; }
+        if (event.key === 'Escape' && state.activeDemoId) {
+          event.preventDefault();
+          closeDemoDialog();
+          return;
+        }
+        if (event.key === 'Tab' && state.menuOpen) {
+          const focusable = [...siteMenu.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+            .filter(node => !node.hidden && node.getClientRects().length > 0);
+          if (!focusable.length) {
+            event.preventDefault();
+            menuButton.focus();
+            return;
+          }
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          } else if (!siteMenu.contains(document.activeElement)) {
+            event.preventDefault();
+            (event.shiftKey ? last : first).focus();
+          }
+        }
+        if (event.key === 'Escape' && state.menuOpen) {
+          event.preventDefault();
+          closeMenu();
+        }
+      });
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => anchor.addEventListener('click', () => {
+        if (!enhancementActive) return;
+        const opened = state.menuOpen;
+        if (opened) closeMenu({ restoreFocus: true });
+        focusAnchorTarget(anchor);
+      }));
+
+      const updateBackToTop = () => enhancementActive && backToTop?.classList.toggle('is-visible', window.scrollY > Math.max(480, window.innerHeight * .75));
+      window.addEventListener('scroll', updateBackToTop, { passive: true });
+      backToTop?.addEventListener('click', () => {
+        if (!enhancementActive) return;
+        window.scrollTo({ top: 0, behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
+        window.requestAnimationFrame(() => document.querySelector('.brand-link')?.focus({ preventScroll: true }));
+      });
+      updateBackToTop();
+
+      const syncResponsiveControls = () => {
+        if (!enhancementActive) return false;
+        if (desktopQuery.matches) {
+          closeMenu({ restoreFocus: false });
+        }
+      };
+      if (desktopQuery.addEventListener) desktopQuery.addEventListener('change', syncResponsiveControls);
+      else desktopQuery.addListener?.(syncResponsiveControls);
+
+      motionState = {
+        revealEnterObserver: null, revealExitObserver: null, evidenceCounterObserver: null,
+        evidenceCounterFrame: 0, evidenceCounterEntered: false,
+        evidenceSection: document.querySelector('#evidence'), evidenceCounters: [...document.querySelectorAll('#evidence .evidence-counter')],
+        revealNodes: [...document.querySelectorAll('.motion-reveal')], motionScrollHandler: null,
+        motionRevealFrame: 0, rapidScrollTimer: 0, heroGlowFrame: 0, heroGlowPoint: null,
+        heroGlowTarget: { x: .5, y: .5 }, heroGlowCurrent: { x: .5, y: .5 },
+        heroGlow: null, heroSection: null, precisePointerQuery: null, task4MotionActive: false
+      };
+      const {
+        evidenceCounters, evidenceSection, revealNodes
+      } = motionState;
+      const renderEvidenceCounter = (node, value) => {
+        const decimals = Number(node.dataset.counterDecimals || 0);
+        node.textContent = `${value.toFixed(decimals)}${node.dataset.counterSuffix || ''}`;
+      };
+      function resetEvidenceCounters() {
+        if (!motionState) return false;
+        motionState.evidenceCounterObserver?.disconnect();
+        motionState.evidenceCounterObserver = null;
+        window.cancelAnimationFrame(motionState.evidenceCounterFrame);
+        motionState.evidenceCounterFrame = 0;
+        motionState.evidenceCounterEntered = false;
+        evidenceCounters.forEach(node => renderEvidenceCounter(node, Number(node.dataset.counterValue)));
+        return true;
+      }
+
+      function playEvidenceCounters() {
+        window.cancelAnimationFrame(motionState.evidenceCounterFrame);
+        const duration = 900;
+        let startedAt = null;
+        evidenceCounters.forEach(node => renderEvidenceCounter(node, 0));
+        const tick = timestamp => {
+          if (!enhancementActive || document.hidden || reducedMotionQuery.matches || !motionState.evidenceCounterEntered) {
+            resetEvidenceCounters();
+            return;
+          }
+          if (startedAt == null) startedAt = timestamp;
+          const progress = Math.min(1, (timestamp - startedAt) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          evidenceCounters.forEach(node => renderEvidenceCounter(node, Number(node.dataset.counterValue) * eased));
+          motionState.evidenceCounterFrame = progress < 1 ? window.requestAnimationFrame(tick) : 0;
+        };
+        motionState.evidenceCounterFrame = window.requestAnimationFrame(tick);
+      }
+
+      function initEvidenceCounters() {
+        resetEvidenceCounters();
+        if (!enhancementActive || document.hidden || reducedMotionQuery.matches || !evidenceSection || !evidenceCounters.length || typeof window.IntersectionObserver !== 'function') return false;
+        motionState.evidenceCounterObserver = new IntersectionObserver(entries => {
+          if (!enhancementActive) return;
+          entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio >= .35 && !motionState.evidenceCounterEntered) {
+              motionState.evidenceCounterEntered = true;
+              playEvidenceCounters();
+            } else if (entry.intersectionRatio <= .05 && motionState.evidenceCounterEntered) {
+              window.cancelAnimationFrame(motionState.evidenceCounterFrame);
+              motionState.evidenceCounterFrame = 0;
+              motionState.evidenceCounterEntered = false;
+              evidenceCounters.forEach(node => renderEvidenceCounter(node, Number(node.dataset.counterValue)));
+            }
+          });
+        }, { threshold: [.05, .35] });
+        motionState.evidenceCounterObserver.observe(evidenceSection);
+        return true;
+      }
+
+      function resetMotionReveals() {
+        const root = document.documentElement;
+        if (!motionState) {
+          root.classList.remove('motion-ready', 'motion-no-stagger');
+          document.querySelectorAll('.motion-reveal').forEach(node => node.classList.remove('is-revealed'));
+          return false;
+        }
+        motionState.revealEnterObserver?.disconnect();
+        motionState.revealExitObserver?.disconnect();
+        motionState.revealEnterObserver = null;
+        motionState.revealExitObserver = null;
+        if (motionState.motionScrollHandler) window.removeEventListener('scroll', motionState.motionScrollHandler);
+        motionState.motionScrollHandler = null;
+        window.cancelAnimationFrame(motionState.motionRevealFrame);
+        motionState.motionRevealFrame = 0;
+        window.clearTimeout(motionState.rapidScrollTimer);
+        root.classList.remove('motion-ready', 'motion-no-stagger');
+        revealNodes.forEach(node => node.classList.add('is-revealed'));
+      }
+
+      function initMotionReveals() {
+        resetMotionReveals();
+        const root = document.documentElement;
+        if (!revealNodes.length || reducedMotionQuery.matches || typeof window.IntersectionObserver !== 'function') {
+          resetMotionReveals();
+          return false;
+        }
+        let lastRevealScrollY = window.scrollY;
+        let lastRevealScrollTime = performance.now();
+        motionState.motionScrollHandler = () => {
+          if (!enhancementActive) return;
+          const now = performance.now();
+          const elapsed = Math.max(1, now - lastRevealScrollTime);
+          const rapidScroll = Math.abs(window.scrollY - lastRevealScrollY) / elapsed > 1.25;
+          lastRevealScrollY = window.scrollY;
+          lastRevealScrollTime = now;
+          if (!rapidScroll) return;
+          root.classList.add('motion-no-stagger');
+          window.clearTimeout(motionState.rapidScrollTimer);
+          motionState.rapidScrollTimer = window.setTimeout(() => root.classList.remove('motion-no-stagger'), 140);
+        };
+        window.addEventListener('scroll', motionState.motionScrollHandler, { passive: true });
+        revealNodes.forEach(node => node.classList.remove('is-revealed'));
+        motionState.revealEnterObserver = new IntersectionObserver(entries => {
+          if (!enhancementActive) return;
+          entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('is-revealed');
+          });
+        }, { rootMargin: '0px 0px -12% 0px', threshold: .16 });
+        motionState.revealExitObserver = new IntersectionObserver(entries => {
+          if (!enhancementActive) return;
+          entries.forEach(entry => {
+            const meaningfulExit = !entry.isIntersecting && entry.target.classList.contains('is-revealed');
+            if (meaningfulExit) entry.target.classList.remove('is-revealed');
+          });
+        }, { rootMargin: '96px 0px 96px', threshold: 0 });
+        root.classList.add('motion-ready');
+        motionState.motionRevealFrame = window.requestAnimationFrame(() => {
+          if (!enhancementActive || !root.classList.contains('motion-ready')) return;
+          revealNodes.forEach(node => {
+            motionState.revealEnterObserver.observe(node);
+            motionState.revealExitObserver.observe(node);
+          });
+          motionState.motionRevealFrame = 0;
+        });
+        return true;
+      }
+
+      function renderHeroGlow() {
+        motionState.heroGlowFrame = 0;
+        if (!motionState.task4MotionActive || !motionState.heroGlow || !motionState.heroSection) return;
+        const target = motionState.heroGlowTarget;
+        const current = motionState.heroGlowCurrent;
+        const bounds = motionState.heroSection.getBoundingClientRect();
+        current.x += (target.x - current.x) * .14;
+        current.y += (target.y - current.y) * .14;
+        const x = (current.x - .5) * bounds.width * .78;
+        const y = (current.y - .5) * bounds.height * .62;
+        motionState.heroGlow.style.setProperty('--hero-glow-x', `${x}px`);
+        motionState.heroGlow.style.setProperty('--hero-glow-y', `${y}px`);
+        const unsettled = Math.abs(target.x - current.x) > .001 || Math.abs(target.y - current.y) > .001;
+        if (unsettled) motionState.heroGlowFrame = window.requestAnimationFrame(renderHeroGlow);
+      }
+
+      function trackHeroGlow(event) {
+        if (!motionState.task4MotionActive) return;
+        if (event.pointerType && event.pointerType !== 'mouse') return;
+        const bounds = motionState.heroSection.getBoundingClientRect();
+        motionState.heroGlowPoint = { x: event.clientX, y: event.clientY };
+        motionState.heroGlowTarget = {
+          x: Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width)),
+          y: Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height))
+        };
+        if (!motionState.heroGlowFrame) motionState.heroGlowFrame = window.requestAnimationFrame(renderHeroGlow);
+      }
+
+      function centerHeroGlow() {
+        if (!motionState?.task4MotionActive) return;
+        motionState.heroGlowPoint = null;
+        motionState.heroGlowTarget = { x: .5, y: .5 };
+        if (!motionState.heroGlowFrame) motionState.heroGlowFrame = window.requestAnimationFrame(renderHeroGlow);
+      }
+
+      function resetHeroGlow() {
+        if (!motionState) return false;
+        motionState.heroGlowPoint = null;
+        motionState.heroGlowTarget = { x: .5, y: .5 };
+        motionState.heroGlowCurrent = { x: .5, y: .5 };
+        window.cancelAnimationFrame(motionState.heroGlowFrame);
+        motionState.heroGlowFrame = 0;
+        motionState.heroGlow?.style.removeProperty('--hero-glow-x');
+        motionState.heroGlow?.style.removeProperty('--hero-glow-y');
+      }
+
+      function resetTask4Motion() {
+        if (!motionState) {
+          document.querySelector('.hero-glow')?.style.removeProperty('--hero-glow-x');
+          document.querySelector('.hero-glow')?.style.removeProperty('--hero-glow-y');
+          document.querySelector('#site-menu')?.classList.remove('menu-items-entering');
+          return false;
+        }
+        motionState.task4MotionActive = false;
+        motionState.heroSection?.removeEventListener('pointermove', trackHeroGlow);
+        motionState.heroSection?.removeEventListener('mousemove', trackHeroGlow);
+        motionState.heroSection?.removeEventListener('pointerleave', centerHeroGlow);
+        resetHeroGlow();
+        document.querySelector('#site-menu')?.classList.remove('menu-items-entering');
+      }
+
+      function initTask4Motion() {
+        resetTask4Motion();
+        motionState.heroSection = document.querySelector('#hero');
+        motionState.heroGlow = motionState.heroSection?.querySelector('.hero-glow') || null;
+        motionState.precisePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+        if (reducedMotionQuery.matches || !motionState.heroSection || !motionState.heroGlow) return false;
+        motionState.task4MotionActive = true;
+        motionState.heroSection.addEventListener('pointermove', trackHeroGlow, { passive: true });
+        motionState.heroSection.addEventListener('mousemove', trackHeroGlow, { passive: true });
+        motionState.heroSection.addEventListener('pointerleave', centerHeroGlow);
+        return true;
+      }
+      const initStandaloneHeroGlow = () => {
+        const hero = document.querySelector('#hero');
+        const glow = hero?.querySelector('.hero-glow');
+        if (!hero || !glow || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        let frame = 0;
+        let targetX = 0.5, targetY = 0.5, currentX = 0.5, currentY = 0.5;
+        const render = () => {
+          frame = 0;
+          currentX += (targetX - currentX) * 0.2;
+          currentY += (targetY - currentY) * 0.2;
+          const bounds = hero.getBoundingClientRect();
+          glow.style.setProperty('--hero-glow-x', `${(currentX - 0.5) * bounds.width * 0.9}px`);
+          glow.style.setProperty('--hero-glow-y', `${(currentY - 0.5) * bounds.height * 0.75}px`);
+          if (Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002) frame = requestAnimationFrame(render);
+        };
+        const move = event => {
+          if (event.pointerType && event.pointerType !== 'mouse') return;
+          const bounds = hero.getBoundingClientRect();
+          targetX = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+          targetY = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+          if (!frame) frame = requestAnimationFrame(render);
+        };
+        hero.addEventListener('mousemove', move, { passive: true });
+        hero.addEventListener('pointermove', move, { passive: true });
+      };
+      const createMotionController = () => {
+        let active = false;
+        const refreshLanguage = () => {
+          if (!active) return false;
+          localizedLiteralBindings.forEach(([selector, values]) => document.querySelectorAll(selector).forEach(node => { node.textContent = values[state.lang === 'en' ? 1 : 0]; }));
+          return true;
+        };
+        const pause = () => {
+          const wasActive = active;
+          resetEvidenceCounters();
+          resetMotionReveals();
+          resetTask4Motion();
+          active = false;
+          return wasActive;
+        };
+        const destroy = () => {
+          pause();
+          document.documentElement.classList.remove('motion-ready', 'motion-no-stagger');
+          revealNodes.forEach(node => node.classList.remove('is-revealed'));
+          evidenceCounters.forEach(node => { node.textContent = node.dataset.counterValue + (node.dataset.counterSuffix || ''); node.removeAttribute('style'); });
+          motionState.heroGlow?.style.removeProperty('--hero-glow-x');
+          motionState.heroGlow?.style.removeProperty('--hero-glow-y');
+          return true;
+        };
+        const init = () => {
+          if (!enhancementActive || document.hidden || reducedMotionQuery.matches) { pause(); return false; }
+          initMotionReveals(); initEvidenceCounters(); active = true; refreshLanguage(); return true;
+        };
+        return { init, refreshLanguage, pause, destroy };
+      };
+      motionController = createMotionController();
+      window.addEventListener('pagehide', () => { if (motionController) motionController.destroy(); });
+      window.addEventListener('pageshow', event => { if (event.persisted && enhancementActive) motionController?.init(); });
+      setLanguage(initial);
+      initializing = false;
+      document.documentElement.classList.add('js');
+      enhancementActive = true;
+      updateDemoCopy();
+      setDemoFilter(state.demoFilter);
+      showLatest(state.latestIndex);
+      scheduleLatestAutoplay();
+      updateBackToTop();
+      syncResponsiveControls();
+      motionController.init();
+      } catch (error) {
+        enhancementActive = false;
+        initializing = false;
+        if (motionController) motionController.destroy();
+        resetEvidenceCounters();
+        resetMotionReveals();
+        resetTask4Motion();
+        if (latestTimer) window.clearInterval(latestTimer);
+        document.documentElement.classList.remove('js', 'motion-ready', 'motion-no-stagger');
+        document.body.classList.remove('menu-open', 'dialog-open');
+        document.body.style.removeProperty('overflow');
+        document.querySelectorAll('#latest .latest-track article').forEach(slide => {
+          slide.removeAttribute('aria-hidden');
+          slide.removeAttribute('inert');
+          slide.classList.remove('is-active');
+          slide.querySelectorAll('[data-latest-original-tabindex]').forEach(control => {
+            const original = control.getAttribute('data-latest-original-tabindex');
+            if (original === '__none__') control.removeAttribute('tabindex');
+            else control.setAttribute('tabindex', original);
+            control.removeAttribute('data-latest-original-tabindex');
+          });
+        });
+        const track = document.querySelector('.latest-track');
+        if (track) track.style.removeProperty('transform');
+        document.querySelectorAll('#demos [data-demo-id]').forEach(card => { card.hidden = false; });
+        document.querySelectorAll('dialog').forEach(dialog => {
+          try { if (dialog.open && typeof dialog.close === 'function') dialog.close(); }
+          catch (_) { dialog.removeAttribute('open'); }
+          dialog.removeAttribute('open');
+          dialog.removeAttribute('role');
+          dialog.removeAttribute('aria-modal');
+          delete dialog.dataset.fallbackOpen;
+        });
+        document.querySelectorAll('body > header, body > main, body > footer, body > .back-to-top').forEach(node => {
+          node.removeAttribute('inert');
+          node.removeAttribute('aria-hidden');
+          node.querySelectorAll('[tabindex="-1"]').forEach(control => {
+            if (!control.matches('.menu-backdrop, .demo-dialog-fallback')) control.removeAttribute('tabindex');
+          });
+        });
+        const siteMenu = document.querySelector('#site-menu');
+        if (siteMenu) siteMenu.dataset.open = 'false';
+        const menuButton = document.querySelector('.menu-trigger');
+        menuButton?.setAttribute('aria-expanded', 'false');
+        document.querySelectorAll('.menu-backdrop, .demo-dialog-fallback').forEach(backdrop => {
+          backdrop.dataset.open = 'false';
+          delete backdrop.dataset.owner;
+        });
+        document.querySelector('.back-to-top')?.classList.remove('is-visible');
+        document.querySelector('.toast')?.setAttribute('data-visible', 'false');
+        try { delete window.KairosApp; } catch (_) { /* A frozen API may be non-configurable; CSS baseline still wins. */ }
+        console.error('Kairos enhancement initialization failed; restored the readable no-JavaScript baseline.', error);
+      }
+    })();
+  </script>
+</body>
+</html>
