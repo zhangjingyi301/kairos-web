@@ -94,7 +94,7 @@
     #site-menu a { position: relative; min-height: 44px; display: inline-flex; align-items: center; }
     #site-menu a::after { content: ""; position: absolute; right: 0; bottom: .35rem; left: 0; height: 2px; background: var(--purple); transform: scaleX(0); transform-origin: left; transition: transform var(--motion-standard) var(--motion-ease); }
     #site-menu a:focus-visible::after { transform: scaleX(1); }
-    .menu-trigger, .lang-trigger { display: none; }
+    .menu-trigger { display: none; }
     .js .menu-trigger { display: inline-block; }
     .js #site-menu { display: none; }
     body.menu-open, body.dialog-open { overflow: hidden; }
@@ -119,7 +119,6 @@
 
     @media (max-width: 59.999rem) {
       .menu-trigger { display: inline-block; }
-      .lang-trigger { display: none; }
       #top nav { min-height: var(--header-height); }
       .brand-link { font-size: .94rem; }
       #site-menu { display: none; }
@@ -359,7 +358,6 @@
 
     @media (min-width: 60rem) {
       :root { --header-height: 4.5rem; }
-      .js .lang-trigger { display: inline-block; }
       .js .menu-trigger { display: none; }
       #site-menu, .js #site-menu { display: flex; align-items: center; gap: 1.2rem; margin-left: 1rem; }
       #site-menu a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; font-size: var(--nav-size); }
@@ -408,7 +406,6 @@
   <header id="top">
     <nav aria-label="主导航" data-i18n-aria-label="a11y.mainNav">
       <a class="brand-link" href="#hero" aria-label="Kairos 首页" data-i18n-aria-label="a11y.home">KAIROS</a>
-      <button class="nav-action lang-trigger" type="button" aria-label="切换到英文" data-i18n-aria-label="a11y.switchLanguage">中文 / EN</button>
       <button class="nav-action menu-trigger" type="button" aria-expanded="false" aria-controls="site-menu" data-i18n="nav.menu">菜单</button>
       <div id="site-menu" data-open="false">
         <a href="#demos">Demo</a>
@@ -749,9 +746,10 @@
         footer: { copyright: '© 2026 Kairos Team' },
         dialogs: { title: 'Demo 详情', close: '关闭', share: '分享', comingSoon: 'Demo 即将上线', results: '共 {count} 个 Demo', contactTitle: '联系我们', copyEmail: '复制邮箱', manualCopy: '请手动复制' },
         toast: { copied: '链接已复制', emailCopied: '邮箱已复制', copyFailed: '无法自动复制，请手动复制', shared: '分享面板已打开', deploymentOnly: '部署到网站后即可分享' },
-        a11y: { mediaPending: '视频尚未发布，即将上线', skip: '跳至主要内容', mainNav: '主导航', home: 'Kairos 首页', switchLanguage: '切换到英文', github: '在新标签页打开 Kairos GitHub 仓库', latestRelease: '在新标签页打开 Kairos 开源仓库', latestCarousel: '最新进展轮播', latestControls: '轮播控制', demoFilters: 'Demo 分类筛选', demoList: 'Demo 列表', dualDemo: '查看双臂协作 Demo 详情', evidenceSource: '在新标签页查看 Kairos GitHub 公开口径', report: '在新标签页打开 Kairos 技术报告', huggingFace: '在新标签页打开 Kairos 3.1 Hugging Face 模型', modelScope: '在新标签页打开 Kairos 3.1 ModelScope 模型', backToTop: '回到顶部' }
+        a11y: { mediaPending: '视频尚未发布，即将上线', skip: '跳至主要内容', mainNav: '主导航', home: 'Kairos 首页', github: '在新标签页打开 Kairos GitHub 仓库', latestRelease: '在新标签页打开 Kairos 开源仓库', latestCarousel: '最新进展轮播', latestControls: '轮播控制', demoFilters: 'Demo 分类筛选', demoList: 'Demo 列表', dualDemo: '查看双臂协作 Demo 详情', evidenceSource: '在新标签页查看 Kairos GitHub 公开口径', report: '在新标签页打开 Kairos 技术报告', huggingFace: '在新标签页打开 Kairos 3.1 Hugging Face 模型', modelScope: '在新标签页打开 Kairos 3.1 ModelScope 模型', backToTop: '回到顶部' }
       };
 
+      /* English copy removed: this release is Chinese-only. */
       const en = {
         meta: { title: 'Kairos World Model', description: 'Kairos: a unified embodied world model for understanding, generation, and action prediction.' },
         nav: { menu: 'Menu', capabilities: 'Capabilities', technology: 'Technology', resources: 'Resources', about: 'About', backToTopShort: 'Top ↑' },
@@ -788,7 +786,6 @@
         { selector: '.skip-link', key: 'a11y.skip', kind: 'text' },
         { selector: '#top nav', key: 'a11y.mainNav', kind: 'aria-label' },
         { selector: '.brand-link', key: 'a11y.home', kind: 'aria-label' },
-        { selector: '.lang-trigger', key: 'a11y.switchLanguage', kind: 'aria-label' },
         { selector: '.menu-trigger', key: 'nav.menu', kind: 'text' },
         { selector: '.back-to-top .back-to-top-label', key: 'nav.backToTopShort', kind: 'text' },
         { selector: '.back-to-top', key: 'a11y.backToTop', kind: 'aria-label' },
@@ -889,7 +886,6 @@
       Object.defineProperties(api, {
         state: { enumerable: true, get: () => stateView },
         content: { enumerable: true, get: () => content },
-        setLanguage: { enumerable: true, value: lang => setLanguage(lang) },
         openMenu: { enumerable: true, value: () => openMenu() },
         closeMenu: { enumerable: true, value: options => closeMenu(options) },
         showLatest: { enumerable: true, value: (index, options) => showLatest(index, options) },
@@ -978,14 +974,10 @@
         setNodeText(source.querySelector('a'), copy.evidence.source.linkText);
         source.lastChild.textContent = copy.evidence.source.after;
         updateLatestCopy();
-        try { localStorage.setItem('kairos-language', next); } catch (_) { /* Persistence is optional. */ }
         motionController?.refreshLanguage();
         return next;
       }
-      const languageButton = document.querySelector('.lang-trigger');
-      if (languageButton) languageButton.addEventListener('click', () => setLanguage(state.lang === 'zh' ? 'en' : 'zh'));
       let initial = 'zh';
-      try { const stored = localStorage.getItem('kairos-language'); if (stored === 'zh' || stored === 'en') initial = stored; } catch (_) { /* Chinese remains the deterministic fallback. */ }
 
       const menuButton = document.querySelector('.menu-trigger');
       const siteMenu = document.querySelector('#site-menu');

@@ -1,45 +1,68 @@
-# Kairos Mobile Web · V1.0
+# Kairos Web
 
-移动端 Kairos World Model 展示原型交付包。
+Kairos World Model 团队展示网站，纯前端静态实现。
 
-## 预览
+## 在线预览
 
-直接双击 `index.html`，或在目录内启动静态服务器：
+https://zhangjingyi301.github.io/kairos-web/
+当前使用 GitHub Pages 默认地址。
+
+## 本地运行
 
 ```bash
 python3 -m http.server 8000
 ```
 
-然后打开 `http://localhost:8000`。
+访问 <http://localhost:8000>。项目无需安装依赖或构建，也可以直接打开 `index.html`。
 
-推荐使用最新版 Chrome、Safari 或 Edge，并以手机宽度预览（设计基准：390 × 844）。
+## 主要功能
 
-## 已包含
+- 响应式 mobile-first 布局
+- `< 60rem` 移动端 hamburger 菜单，`≥ 60rem` 桌面横向导航
+- Latest 轮播、Demo 分类、视频展示与详情弹层
+- 基础无障碍、键盘交互与无 JavaScript 降级
+- GitHub、arXiv、Hugging Face、ModelScope 外链
 
-- 明亮极简、紫色强调的移动优先页面
-- 中英文切换与语言偏好记忆
-- Latest 自动轮播、暂停、滑动和减少动态效果支持
-- Demo 分类、详情弹层、分享/复制入口
-- 菜单抽屉、页脚折叠、回到顶部
-- GitHub、论文、Hugging Face、ModelScope 外链
-- 无 JavaScript 时的静态内容降级
+## 项目结构
 
-## 当前占位与发布前事项
+```text
+index.html    网站主体、样式与交互
+media/        图片、图标和 Demo 视频
+README.md     项目说明
+```
 
-- Demo 视频、封面和字幕尚未提供，页面使用 `Coming soon / 即将上线` 占位。
-- `contact@kairos.ai` 是原型占位邮箱，发布前必须替换为团队确认的公开邮箱。
-- 当前 Logo 为文字版；正式发布建议替换为官方透明 KAIROS Logo。
-- 评测数字来源于 Kairos GitHub 公开信息（截至 2026-08），发布前请复核口径。
-- 本交付是纯前端静态原型，不包含后台、统计、账号、表单或在线推理。
+## 响应式检查
 
-## 目录
+页面使用流式 gutter、响应式容器和卡片布局，建议检查：
 
-- `index.html`：可直接打开的完整原型
-- `design-spec.md`：视觉、内容、交互和验收规格
-- `preview/homepage-mobile.png`：手机端首页预览
-- `preview/RECORDING-TODO.md`：交互录屏脚本和输出要求；正式录屏完成后补充 `interaction-demo.mp4`
-- `DELIVERY-CHECKLIST.md`：已完成项与正式发布前待办
+```text
+320px · 390px · 768px · 1024px · 1440px · 1920px
+```
+
+移动菜单支持打开、关闭、遮罩、Escape 和点击导航项后自动关闭。
+
+## 内容与媒体
+
+- 页面文案和结构：`index.html`
+- Demo 视频：`media/demos/`
+- 替换视频时可保持原文件名，避免修改 HTML 路径
+- 上传前请压缩视频；GitHub 普通 Git push 不支持单个超过 100 MB 的文件
+
+## 发布检查
+
+- [ ] 手机、平板和桌面布局正常
+- [ ] 无非预期横向滚动
+- [ ] Hamburger 菜单和锚点跳转正常
+- [ ] 视频、图片、favicon 和外链正常
+- [ ] 联系方式与公开数据已确认
+- [ ] GitHub Pages 部署成功
+
+网站通过 GitHub Pages 从 `main` 分支部署。
+
+## 当前限制
+
+纯前端静态站点，不包含后台、账号、数据库、评论、支付或在线推理。
 
 ## 版本
 
-V1.0 · 2026-08-21
+V1.0 · 2026-08-26
